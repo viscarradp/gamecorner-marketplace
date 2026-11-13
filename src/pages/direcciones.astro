@@ -1,0 +1,109 @@
+---
+import DirectionSample from '../components/DirectionSample.astro';
+
+const directions = [
+  {
+    id: 'dir-a', letter: 'A', name: 'Mostrador',
+    concept: 'La tienda de la esquina, pero en línea. Toma el "Corner" del nombre: esquinas recortadas, etiquetas de precio y papel cálido. Se siente como un negocio local con dueño, no como un marketplace anónimo.',
+    attributes: ['Local', 'Cercana', 'Honesta', 'Con oficio'],
+    rationale: 'La propuesta de valor es "tienda local de confianza" frente a vendedores informales en Marketplace. El naranja-etiqueta pone el foco en el precio final (frustración #1: cargos ocultos) y el verde se reserva a lo que da tranquilidad: entrega y garantía.',
+    risk: 'Puede leerse menos "gamer" que B; se compensa con fotografía de producto y contenido de comunidad en redes.',
+    fonts: { display: 'Bricolage Grotesque 800', body: 'Public Sans' },
+    swatches: [
+      { name: 'Tinta', hex: '#1D1B18', role: 'Texto, header' },
+      { name: 'Papel', hex: '#F4EEE3', role: 'Fondo' },
+      { name: 'Etiqueta', hex: '#D9481F', role: 'Acción, precio' },
+      { name: 'Garantía', hex: '#1F5A48', role: 'Entrega, confianza' },
+      { name: 'Arena', hex: '#CFC5B4', role: 'Bordes' },
+    ],
+    voice: [
+      { label: 'Botón', text: 'Agregar al carrito' },
+      { label: 'Entrega', text: 'Recibes tu código en hasta 24 h. Casi siempre llega antes.' },
+      { label: 'Pago rechazado', text: 'Tu banco no aprobó el pago. No se te cobró nada. Prueba con otra tarjeta o escríbenos.' },
+    ],
+  },
+  {
+    id: 'dir-b', letter: 'B', name: 'Cartucho',
+    concept: 'Directo y con energía de cultura gamer: contraste fuerte, amarillo señal, sombras duras y etiquetas pixeladas solo en detalles. Recuerda a las cajas de juegos y a los manuales impresos.',
+    attributes: ['Enérgica', 'Directa', 'Gamer', 'Sin rodeos'],
+    rationale: 'Habla el idioma del público de 16–30 que llega desde TikTok e Instagram (65 % del peso en el buyer persona). Los bloques negros y amarillos hacen muy visible el distintivo de 24 h y el botón, dos hallazgos del testeo.',
+    risk: 'Mucho contraste y bordes gruesos pueden cansar en listados largos y restar sensación de seriedad en el pago; hay que suavizar el checkout.',
+    fonts: { display: 'Archivo 800', body: 'IBM Plex Sans', extra: 'Silkscreen (solo etiquetas)' },
+    swatches: [
+      { name: 'Negro', hex: '#0E0E10', role: 'Texto, botón' },
+      { name: 'Señal', hex: '#FFD23F', role: 'Acento, header' },
+      { name: 'Cobalto', hex: '#2949E6', role: 'Enlaces, detalles' },
+      { name: 'Blanco', hex: '#FFFFFF', role: 'Superficie' },
+      { name: 'Gris', hex: '#F2F2EE', role: 'Fondo' },
+    ],
+    voice: [
+      { label: 'Botón', text: 'Lo quiero' },
+      { label: 'Entrega', text: 'Código en hasta 24 h. Directo a tu WhatsApp o correo.' },
+      { label: 'Pago rechazado', text: 'El pago no pasó. Tranqui, no se cobró nada. Intenta con otra tarjeta.' },
+    ],
+  },
+  {
+    id: 'dir-c', letter: 'C', name: 'Azul cuscatleco',
+    concept: 'Retail tecnológico limpio y tranquilo, anclado en el azul de la bandera salvadoreña. Precios en tipografía monoespaciada, como un recibo: exactos y verificables.',
+    attributes: ['Confiable', 'Clara', 'Salvadoreña', 'Ordenada'],
+    rationale: 'Ataca de frente el temor a la estafa (desk research y usuario 2): se parece más a un banco o a una tienda formal que a una cuenta de Instagram. El azul nacional refuerza "tienda local" sin caer en folclor.',
+    risk: 'Es la más "segura" y por eso la menos distintiva: se parece a muchas tiendas genéricas. Necesita personalidad en el contenido y el tono.',
+    fonts: { display: 'Manrope 800', body: 'Manrope', extra: 'JetBrains Mono (precios)' },
+    swatches: [
+      { name: 'Azul', hex: '#0F47AF', role: 'Acción, marca' },
+      { name: 'Noche', hex: '#0F1B33', role: 'Texto' },
+      { name: 'Sol', hex: '#F2B705', role: 'Acento, avisos' },
+      { name: 'Niebla', hex: '#F5F7FB', role: 'Fondo' },
+      { name: 'Línea', hex: '#D5DCEA', role: 'Bordes' },
+    ],
+    voice: [
+      { label: 'Botón', text: 'Agregar al carrito' },
+      { label: 'Entrega', text: 'Entrega del código en un plazo de hasta 24 horas.' },
+      { label: 'Pago rechazado', text: 'El pago fue rechazado por tu banco. No se realizó ningún cargo. Elige otro método.' },
+    ],
+  },
+];
+---
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Direcciones visuales · Game Corner Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;600;700&family=JetBrains+Mono:wght@600;800&family=Manrope:wght@400;600;700;800&family=Public+Sans:wght@400;600;700&family=Silkscreen&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="intro">
+    <p class="kicker">Game Corner Store · Fase 1 · Lineamientos visuales</p>
+    <h1>Tres direcciones visuales</h1>
+    <p>Las tres resuelven lo mismo con distinto carácter. Cada una incluye lo que el testeo de usabilidad volvió obligatorio: el <b>distintivo de entrega en hasta 24 h debajo del botón</b>, los <b>logos de Wompi y Banco Agrícola</b> junto al pago y el <b>botón flotante de WhatsApp</b>. El producto de muestra es la tarjeta PSN de $20, la misma tarea de la prueba.</p>
+    <nav class="jump" aria-label="Ir a dirección">
+      {directions.map((d) => <a href={`#${d.id}`}>{d.letter} · {d.name}</a>)}
+    </nav>
+    <p class="note">Logos de pago y fotos son marcadores de posición. El precio de $22.00 es de ejemplo.</p>
+  </header>
+
+  {directions.map((d) => <DirectionSample {...d} />)}
+
+  <footer class="outro">
+    <p>Elige una dirección (o una mezcla, por ejemplo "estructura de C con el acento de A"). Con esa base se escriben los lineamientos completos y se construyen los wireframes.</p>
+  </footer>
+</body>
+</html>
+
+<style is:global>
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: #fff; color: #111; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; overflow-x: hidden; }
+  .intro, .outro { max-width: 1120px; margin: 0 auto; padding: 48px 16px 40px; }
+  .kicker { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: #666; margin: 0 0 12px; }
+  .intro h1 { font-size: clamp(2rem, 6vw, 3rem); line-height: 1.05; margin: 0 0 16px; letter-spacing: -0.02em; }
+  .intro p { max-width: 70ch; line-height: 1.55; }
+  .jump { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 8px; }
+  .jump a { color: #111; border: 1px solid #ccc; padding: 8px 14px; border-radius: 99px; text-decoration: none; font-weight: 600; font-size: .9rem; }
+  .jump a:hover { border-color: #111; }
+  .note { font-size: .85rem; color: #666; }
+  .outro { border-top: 1px solid #eee; font-size: 1.05rem; }
+</style>

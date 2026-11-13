@@ -1,0 +1,241 @@
+{
+  "tarjeta-psn": {
+    "file": "/img/tarjeta-psn.png",
+    "alt": "Logo de PlayStation Network",
+    "fuente": "https://commons.wikimedia.org/wiki/File:PlayStation_Network_logo.png",
+    "autor": "Sony Computer Entertainment",
+    "licencia": "Public domain"
+  },
+  "tarjeta-eshop": {
+    "file": "/img/tarjeta-eshop.svg",
+    "alt": "Logo de Nintendo eShop",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Nintendo_eShop_Logo_(2025).svg",
+    "autor": "Nintendo",
+    "licencia": "Public domain"
+  },
+  "tarjeta-xbox": {
+    "file": "/img/tarjeta-xbox.svg",
+    "alt": "Logo de Xbox",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Xbox_logo_(2019).svg",
+    "autor": "Microsoft Corporation",
+    "licencia": "Public domain"
+  },
+  "steam-wallet": {
+    "file": "/img/steam-wallet.svg",
+    "alt": "Logo de Steam",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Steam_icon_logo.svg",
+    "autor": "Valve Corporation",
+    "licencia": "Public domain"
+  },
+  "tarjeta-google-play": {
+    "file": "/img/tarjeta-google-play.jpg",
+    "alt": "Tarjeta de regalo Google Play en exhibidor",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Google_Play_gift_card.jpeg",
+    "autor": "Pmsyyz",
+    "licencia": "CC BY-SA 4.0"
+  },
+  "playstation-plus-essential-3-meses": {
+    "file": "/img/playstation-plus-essential-3-meses.svg",
+    "alt": "Logo de PlayStation Plus",
+    "fuente": "https://commons.wikimedia.org/wiki/File:PlayStation_Plus_second_logo_and_wordmark.svg",
+    "autor": "Sony",
+    "licencia": "Public domain"
+  },
+  "xbox-game-pass-ultimate-1-mes": {
+    "file": "/img/xbox-game-pass-ultimate-1-mes.svg",
+    "alt": "Logo de Xbox Game Pass",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Xbox_Game_Pass_new_logo_-_colored_version.svg",
+    "autor": "Microsoft",
+    "licencia": "Public domain"
+  },
+  "playstation-5-slim": {
+    "file": "/img/playstation-5-slim.jpg",
+    "alt": "Consola PlayStation 5 con mando DualSense",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Playstation_5_base_edition_with_controller_(original).jpg",
+    "autor": "Howardcorn33",
+    "licencia": "CC0"
+  },
+  "nintendo-switch-2": {
+    "file": "/img/nintendo-switch-2.jpg",
+    "alt": "Consola Nintendo Switch 2 en su base",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Nintendo_Switch_2_in_Docking_Console.jpg",
+    "autor": "Crisco 1492",
+    "licencia": "CC BY-SA 4.0"
+  },
+  "nintendo-switch-oled": {
+    "file": "/img/nintendo-switch-oled.jpg",
+    "alt": "Consola Nintendo Switch OLED en su base",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Nintendo-Switch-OLED-Docked.jpg",
+    "autor": "PantheraLeo1359531",
+    "licencia": "CC BY 4.0"
+  },
+  "xbox-series-s": {
+    "file": "/img/xbox-series-s.jpg",
+    "alt": "Consola Xbox Series S con mando",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Xbox_Series_S_with_controller.jpg",
+    "autor": "AsmodeanUnderscore",
+    "licencia": "CC BY-SA 4.0"
+  },
+  "playstation-4-slim-seminueva": {
+    "file": "/img/playstation-4-slim-seminueva.jpg",
+    "alt": "Consola PlayStation 4 Slim blanca con mando",
+    "fuente": "https://commons.wikimedia.org/wiki/File:PlayStation_4_Slim_8504.jpg",
+    "autor": "Ashley Pomeroy",
+    "licencia": "CC BY-SA 4.0"
+  },
+  "ea-sports-fc-26-ps5": {
+    "file": "/img/ea-sports-fc-26-ps5.svg",
+    "alt": "Logo de EA Sports FC 26",
+    "fuente": "https://commons.wikimedia.org/wiki/File:FC_26_Logo.svg",
+    "autor": "Electronic Arts",
+    "licencia": "Public domain"
+  },
+  "ea-sports-fc-26-switch": {
+    "file": "/img/ea-sports-fc-26-ps5.svg",
+    "alt": "Logo de EA Sports FC 26",
+    "fuente": "https://commons.wikimedia.org/wiki/File:FC_26_Logo.svg",
+    "autor": "Electronic Arts",
+    "licencia": "Public domain"
+  },
+  "marvels-spider-man-2-ps5": {
+    "file": "/img/marvels-spider-man-2-ps5.png",
+    "alt": "Logo de Marvel's Spider-Man 2",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Marvel%27s_Spider-Man_2_(2025)_logo_official_(SGDB_124347).png",
+    "autor": "Insomniac Games / Sony (subido por MassiveGoods)",
+    "licencia": "Public domain",
+    "fondo": "oscuro"
+  },
+  "gran-turismo-7-ps4": {
+    "file": "/img/gran-turismo-7-ps4.svg",
+    "alt": "Logo de Gran Turismo 7",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Gran_Turismo_7_logo.svg",
+    "autor": "Polyphony Digital",
+    "licencia": "Public domain"
+  },
+  "mario-kart-world-switch-2": {
+    "file": "/img/mario-kart-world-switch-2.png",
+    "alt": "Logo de Mario Kart",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Mario_Kart_2025Logo.png",
+    "autor": "Nintendo",
+    "licencia": "Public domain"
+  },
+  "zelda-tears-of-the-kingdom-switch": {
+    "file": "/img/zelda-tears-of-the-kingdom-switch.svg",
+    "alt": "Logo de The Legend of Zelda: Tears of the Kingdom",
+    "fuente": "https://commons.wikimedia.org/wiki/File:The_Legend_of_Zelda_Tears_of_the_Kingdom.svg",
+    "autor": "Nintendo",
+    "licencia": "Public domain"
+  },
+  "hollow-knight-switch": {
+    "file": "/img/hollow-knight-switch.svg",
+    "alt": "Logo de Hollow Knight",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Hollow_Knight_text-only_logo_black.svg",
+    "autor": "Team Cherry",
+    "licencia": "Public domain"
+  },
+  "forza-horizon-5-xbox": {
+    "file": "/img/forza-horizon-5-xbox.svg",
+    "alt": "Logo de la saga Forza",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Forza_Games_logo.svg",
+    "autor": "Microsoft / Playground Games",
+    "licencia": "Public domain"
+  },
+  "mando-dualsense-blanco": {
+    "file": "/img/mando-dualsense-blanco.png",
+    "alt": "Mando DualSense blanco de PlayStation 5",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Playstation_DualSense_Controller.png",
+    "autor": "Alex Cochrane",
+    "licencia": "CC BY-SA 4.0"
+  },
+  "mando-xbox-inalambrico": {
+    "file": "/img/mando-xbox-inalambrico.jpg",
+    "alt": "Mando inalámbrico Xbox negro",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Xbox_Series_Controller_Carbon_Black.jpg",
+    "autor": "uKER",
+    "licencia": "CC BY-SA 4.0"
+  },
+  "mando-pro-switch-2": {
+    "file": "/img/mando-pro-switch-2.jpg",
+    "alt": "Mando Pro de Nintendo Switch 2",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Nintendo_Switch_2_Pro_Controller.jpg",
+    "autor": "Kyu3a",
+    "licencia": "CC BY-SA 4.0"
+  },
+  "audifonos-gamer-estereo": {
+    "file": "/img/audifonos-gamer-estereo.jpg",
+    "alt": "Audífonos gamer con micrófono",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Sound_BlasterX_H5_Gaming_Headset.jpg",
+    "autor": "Dinopkk",
+    "licencia": "CC BY-SA 3.0"
+  },
+  "memoria-microsd-256gb": {
+    "file": "/img/memoria-microsd-256gb.jpg",
+    "alt": "Tarjeta de memoria microSD",
+    "fuente": "https://commons.wikimedia.org/wiki/File:MicroSD_card_2GB_focus-stacked.jpg",
+    "autor": "Afrank99",
+    "licencia": "CC BY-SA 3.0"
+  },
+  "cable-usb-c-3m": {
+    "file": "/img/cable-usb-c-3m.jpg",
+    "alt": "Cable USB-C",
+    "fuente": "https://commons.wikimedia.org/wiki/File:USB-C_cable_2017_A.jpg",
+    "autor": "Fructibus",
+    "licencia": "CC0"
+  },
+  "logo-playstation": {
+    "file": "/img/logo-playstation.svg",
+    "alt": "Logo de PlayStation",
+    "fuente": "https://commons.wikimedia.org/wiki/File:PlayStation_logo.svg",
+    "autor": "Sony Interactive Entertainment",
+    "licencia": "Public domain"
+  },
+  "logo-nintendo": {
+    "file": "/img/logo-nintendo.svg",
+    "alt": "Logo de Nintendo",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Nintendo_logo.svg",
+    "autor": "Nintendo",
+    "licencia": "Public domain"
+  },
+  "logo-xbox": {
+    "file": "/img/logo-xbox.svg",
+    "alt": "Logo de Xbox",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Xbox_2019_Green_horizontal.svg",
+    "autor": "Microsoft",
+    "licencia": "CC BY-SA 4.0"
+  },
+  "logo-steam": {
+    "file": "/img/logo-steam.svg",
+    "alt": "Logo de Steam",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Steam_Logo.svg",
+    "autor": "Valve Corporation",
+    "licencia": "Public domain"
+  },
+  "logo-google-play": {
+    "file": "/img/logo-google-play.svg",
+    "alt": "Logo de Google Play",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Google_Play_2022_logo.svg",
+    "autor": "Google",
+    "licencia": "Public domain"
+  },
+  "logo-wompi": {
+    "file": "/img/logo-wompi.svg",
+    "alt": "Logo de Wompi",
+    "fuente": "https://wompi.sv/img/logo.svg",
+    "autor": "Wompi (Banco Agrícola)",
+    "licencia": "Marca registrada, uso ilustrativo académico"
+  },
+  "logo-banco-agricola": {
+    "file": "/img/logo-banco-agricola.png",
+    "alt": "Logo de Banco Agrícola",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Banco_Agr%C3%ADcola.png",
+    "autor": "Banco Agrícola",
+    "licencia": "Public domain"
+  },
+  "hero": {
+    "file": "/img/hero.jpg",
+    "alt": "Dos mandos de Xbox sobre fondo claro",
+    "fuente": "https://commons.wikimedia.org/wiki/File:Xbox_Wireless_Controllers_(Xbox_Series_X_Blue_Controller,_Xbox_One_X_Black_Controller).jpg",
+    "autor": "AlexZade",
+    "licencia": "CC BY-SA 4.0"
+  }
+}

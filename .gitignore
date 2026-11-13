@@ -1,0 +1,12 @@
+# dependencias y builds
+node_modules/
+dist/
+.astro/
+
+# sistema
+.DS_Store
+.render/
+
+# documentos del curso (contienen datos del equipo; se mantienen fuera del repo público)
+*.pdf
+*.docx

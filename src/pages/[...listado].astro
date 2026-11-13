@@ -1,0 +1,197 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ProductCard from '../components/ProductCard.astro';
+import DeliveryBadge from '../components/DeliveryBadge.astro';
+import Icon from '../components/Icon.astro';
+import { listados, productos, plataformas, precioDesde, type Listado } from '../data/catalogo';
+
+export function getStaticPaths() {
+  return listados.map((l) => ({ params: { listado: l.path }, props: { path: l.path } }));
+}
+const { path } = Astro.props as { path: string };
+const l = listados.find((x) => x.path === path) as Listado;
+const items = productos.filter(l.filtro);
+const esDigital = path === 'codigos-saldo-digital';
+const soloDigital = items.length > 0 && items.every((p) => p.linea === 'digital');
+const grupos = esDigital
+  ? plataformas.map((pl) => ({ ...pl, items: items.filter((p) => p.plataforma === pl.id) })).filter((g) => g.items.length)
+  : [];
+const current = `/${path}/`;
+---
+<Base title={l.titulo} description={l.intro}>
+  <div class="container">
+    <Breadcrumbs items={l.migas} />
+    <header class="list-head">
+      <h1>{l.titulo}</h1>
+      <p class="muted">{l.intro}</p>
+      {l.keyword && <p class="kw small">URL <code>{current}</code> · palabra clave: “{l.keyword}”</p>}
+    </header>
+
+    {l.chips && (
+      <nav aria-label="Subcategorías">
+        <ul class="chips chips-scroll sub-chips">
+          {l.chips.map((c) => <li><a class="chip" href={c.href} aria-current={c.href === current ? 'page' : undefined}>{c.nombre}</a></li>)}
+        </ul>
+      </nav>
+    )}
+
+    {esDigital && <div class="digital-note"><DeliveryBadge tipo="digital" /></div>}
+
+    <div class="layout">
+      <!-- Filtros: hoja desplegable en móvil, barra lateral en escritorio -->
+      <details class="filters" open>
+        <summary class="btn btn-secondary btn-block filters-toggle"><span>Filtrar</span> <span class="filters-count" data-count></span></summary>
+        <form class="filters-body" data-filters>
+          <fieldset>
+            <legend>Plataforma</legend>
+            <ul class="filter-list">
+              <li><a href="/juegos-playstation/">PlayStation</a></li>
+              <li><a href="/juegos-nintendo/">Nintendo</a></li>
+              <li><a href="/juegos-pc/">PC</a></li>
+              <li><a href="/juegos-xbox/">Xbox</a></li>
+            </ul>
+          </fieldset>
+          <fieldset>
+            <legend>Precio (USD)</legend>
+            <label><input type="checkbox" name="precio" value="0-25" /> Hasta $25</label>
+            <label><input type="checkbox" name="precio" value="25-75" /> $25 a $75</label>
+            <label><input type="checkbox" name="precio" value="75-300" /> $75 a $300</label>
+            <label><input type="checkbox" name="precio" value="300-9999" /> Más de $300</label>
+          </fieldset>
+          {!soloDigital && (
+            <fieldset>
+              <legend>Condición</legend>
+              <label><input type="checkbox" name="condicion" value="nuevo" /> Nuevo</label>
+              <label><input type="checkbox" name="condicion" value="seminuevo" /> Seminuevo</label>
+            </fieldset>
+          )}
+          <fieldset>
+            <legend>Disponibilidad</legend>
+            <label class="switch"><input type="checkbox" name="inmediata" value="1" /> Solo disponibilidad inmediata</label>
+          </fieldset>
+          <button type="reset" class="btn-link small">Quitar filtros</button>
+        </form>
+      </details>
+
+      <section aria-label="Productos">
+        <div class="toolbar">
+          <p class="small muted" data-total>{items.length} productos</p>
+          <label class="small sort">Ordenar
+            <select class="select" data-sort>
+              <option value="rel">Relevancia</option>
+              <option value="asc">Precio: menor a mayor</option>
+              <option value="desc">Precio: mayor a menor</option>
+            </select>
+          </label>
+        </div>
+
+        {esDigital ? (
+          grupos.map((g) => (
+            <section class="group" id={g.id} aria-labelledby={`g-${g.id}`}>
+              <h2 id={`g-${g.id}`}>{g.nombre}</h2>
+              <ul class="grid-products" data-grid>
+                {g.items.map((p) => <li data-precio={precioDesde(p)} data-condicion={p.condicion} data-disp={p.disponibilidad}><ProductCard p={p} /></li>)}
+              </ul>
+            </section>
+          ))
+        ) : items.length ? (
+          <ul class="grid-products" data-grid>
+            {items.map((p) => <li data-precio={precioDesde(p)} data-condicion={p.condicion} data-disp={p.disponibilidad}><ProductCard p={p} /></li>)}
+          </ul>
+        ) : null}
+
+        <div class="empty" data-empty hidden={items.length > 0}>
+          <Icon name="search" size={32} />
+          <h2>No hay productos con estos filtros</h2>
+          <p class="muted">Prueba quitando filtros o pregúntanos por WhatsApp: conseguimos productos bajo pedido.</p>
+          <button class="btn btn-secondary" type="button" data-reset>Quitar filtros</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-filters]');
+  const sort = document.querySelector<HTMLSelectElement>('[data-sort]');
+  const grids = [...document.querySelectorAll<HTMLUListElement>('[data-grid]')];
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+  const total = document.querySelector<HTMLElement>('[data-total]');
+  const count = document.querySelector<HTMLElement>('[data-count]');
+  const originals = grids.map((g) => [...g.children] as HTMLElement[]);
+
+  function apply() {
+    if (!form) return;
+    const fd = new FormData(form);
+    const precios = fd.getAll('precio').map((v) => String(v).split('-').map(Number));
+    const conds = fd.getAll('condicion').map(String);
+    const inmediata = fd.has('inmediata');
+    let visible = 0;
+    grids.forEach((g, gi) => {
+      let lis = [...originals[gi]];
+      if (sort?.value === 'asc') lis.sort((a, b) => +a.dataset.precio! - +b.dataset.precio!);
+      if (sort?.value === 'desc') lis.sort((a, b) => +b.dataset.precio! - +a.dataset.precio!);
+      let shown = 0;
+      lis.forEach((li) => {
+        const p = +li.dataset.precio!;
+        const ok = (!precios.length || precios.some(([a, b]) => p >= a && p < b))
+          && (!conds.length || conds.includes(li.dataset.condicion!))
+          && (!inmediata || li.dataset.disp === 'inmediata');
+        li.hidden = !ok; if (ok) shown++;
+        g.append(li);
+      });
+      const section = g.closest('section.group') as HTMLElement | null;
+      if (section) section.hidden = shown === 0;
+      visible += shown;
+    });
+    const active = precios.length + conds.length + (inmediata ? 1 : 0);
+    if (count) count.textContent = active ? `(${active})` : '';
+    if (total) total.textContent = `${visible} productos`;
+    if (empty) empty.hidden = visible > 0;
+  }
+  form?.addEventListener('change', apply);
+  form?.addEventListener('reset', () => setTimeout(apply));
+  sort?.addEventListener('change', apply);
+  document.querySelector('[data-reset]')?.addEventListener('click', () => form?.reset());
+
+  // En móvil los filtros arrancan cerrados
+  const det = document.querySelector<HTMLDetailsElement>('details.filters');
+  if (det && window.matchMedia('(max-width: 899px)').matches) det.open = false;
+</script>
+
+<style>
+  .list-head { margin: var(--s-2) 0 var(--s-4); }
+  .list-head h1 { margin-bottom: var(--s-2); }
+  .list-head p { margin: 0; max-width: 60ch; }
+  .kw { margin-top: var(--s-2) !important; color: var(--c-muted); }
+  .kw code { background: var(--c-paper-2); padding: 1px 4px; }
+  .sub-chips { margin-bottom: var(--s-4); }
+  .digital-note { margin-bottom: var(--s-5); max-width: 560px; }
+
+  .layout { display: grid; gap: var(--s-4); }
+  @media (min-width: 900px) { .layout { grid-template-columns: 240px 1fr; gap: var(--s-6); align-items: start; } }
+
+  .filters { background: var(--c-white); border: var(--border); }
+  .filters-toggle { border: 0; list-style: none; }
+  .filters-toggle::-webkit-details-marker { display: none; }
+  .filters-body { display: grid; gap: var(--s-4); padding: var(--s-4); border-top: var(--border); }
+  .filters-body legend { font-weight: 700; font-size: var(--t-sm); margin-bottom: 8px; }
+  .filters-body label { display: flex; gap: 10px; align-items: center; padding: 6px 0; font-size: var(--t-sm); cursor: pointer; }
+  .filters-body input { width: 18px; height: 18px; accent-color: var(--c-ink); }
+  .filter-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; font-size: var(--t-sm); }
+  .filter-list a { color: var(--c-ink); }
+  @media (min-width: 900px) {
+    .filters { position: sticky; top: 150px; }
+    .filters-toggle { display: none; }
+    .filters-body { border-top: 0; }
+  }
+
+  .toolbar { display: flex; justify-content: space-between; align-items: center; gap: var(--s-3); margin-bottom: var(--s-4); flex-wrap: wrap; }
+  .toolbar p { margin: 0; }
+  .sort { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  .sort .select { min-height: 40px; width: auto; padding: 6px 8px; }
+  .group { margin-bottom: var(--s-6); scroll-margin-top: 160px; }
+  .group h2 { font-size: var(--t-lg); border-bottom: var(--border); padding-bottom: var(--s-2); }
+  .empty { text-align: center; padding: var(--s-7) var(--s-4); border: 2px dashed var(--c-muted); display: grid; justify-items: center; gap: var(--s-2); }
+</style>

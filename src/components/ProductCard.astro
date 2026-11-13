@@ -1,0 +1,23 @@
+---
+import { type Producto, precioDesde, usd, nombrePlataforma } from '../data/catalogo';
+import Media from './Media.astro';
+interface Props { p: Producto }
+const { p } = Astro.props;
+const desde = precioDesde(p);
+const flag = p.precioAntes ? 'Oferta' : p.disponibilidad === 'preventa' ? 'Preventa' : p.condicion === 'seminuevo' ? 'Seminuevo' : null;
+const entrega = p.linea === 'digital' ? 'Código en hasta 24 h' : p.disponibilidad === 'pocas' ? 'Pocas unidades · Envío AMSS' : p.disponibilidad === 'preventa' ? 'Preventa · Envío AMSS' : 'Disponible · Envío AMSS';
+---
+<article class="pcard">
+  {flag && <span class="pcard-flag label">{flag}</span>}
+  <Media slug={p.slug} class="ph-square" label={`Foto ${p.linea === 'digital' ? 'tarjeta' : 'producto'}`} />
+  <div class="pcard-body">
+    <span class="label label-cobalt">{p.linea === 'digital' ? 'Código digital' : nombrePlataforma(p.plataforma)}</span>
+    <h3 class="pcard-title"><a href={`/producto/${p.slug}/`}>{p.nombre}</a></h3>
+    <span class="pcard-meta">{entrega}</span>
+    <div class="pcard-price">
+      {p.montos && <span class="price-from">desde</span>}
+      <span class="price">{usd(desde)}</span>
+      {p.precioAntes && <span class="price-old">{usd(p.precioAntes)}</span>}
+    </div>
+  </div>
+</article>

@@ -1,0 +1,56 @@
+---
+// Flujo UX p. 8: "Fallo o fondos insuficientes → Pago rechazado: explicación + opción de diferente método de pago".
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+---
+<Base title="Pago no aprobado" variant="checkout">
+  <div class="container calm wrap">
+    <ol class="stepper" aria-label="Progreso">
+      <li class="done">Carrito</li><li class="done">Datos y entrega</li><li class="current" aria-current="step">Pago en Wompi</li>
+    </ol>
+
+    <section class="alert alert-error" aria-live="assertive">
+      <Icon name="alert" size={32} />
+      <div>
+        <h1>Tu banco no aprobó el pago</h1>
+        <p><b>No se te cobró nada.</b> Tu pedido sigue guardado por <b data-total>$22.00</b>.</p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Por qué pudo pasar</h2>
+      <ul class="reasons">
+        <li><b>Fondos insuficientes</b> en la cuenta asociada a la tarjeta.</li>
+        <li><b>Compras en línea desactivadas.</b> Algunas tarjetas de débito las traen apagadas; se activan desde la app del banco.</li>
+        <li><b>Verificación no completada.</b> Tu banco pidió un código (3-D Secure) y no se ingresó a tiempo.</li>
+        <li><b>Datos de la tarjeta</b> con algún error.</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <h2>¿Qué quieres hacer?</h2>
+      <div class="options">
+        <a class="btn btn-primary btn-block" href="/pago/wompi/">Intentar de nuevo con otra tarjeta</a>
+        <a class="btn btn-secondary btn-block" href="/checkout/#pago">Elegir otro método de pago</a>
+        <button class="btn btn-whatsapp btn-block" popovertarget="wa-chat"><Icon name="whatsapp" /> Pedir ayuda por WhatsApp</button>
+      </div>
+      <p class="small muted">¿Prefieres pagar por transferencia? Escríbenos y revisamos tu caso. <span class="tbd">Política por confirmar</span></p>
+    </section>
+  </div>
+</Base>
+
+<script>
+  import { getOrderItems, lines, totals, usd } from '../../scripts/cart';
+  const el = document.querySelector('[data-total]');
+  if (el) el.textContent = usd(totals(lines(getOrderItems())).total);
+</script>
+
+<style>
+  .wrap { max-width: 720px; display: grid; gap: var(--s-4); padding-bottom: var(--s-8); }
+  .wrap .stepper { margin-bottom: 0; }
+  .alert h1 { font-size: var(--t-xl); margin-bottom: 6px; }
+  .alert svg { color: var(--c-error); }
+  .panel h2 { font-size: var(--t-lg); }
+  .reasons { margin: 0; padding-left: 20px; display: grid; gap: 8px; font-size: var(--t-sm); }
+  .options { display: grid; gap: var(--s-3); margin-bottom: var(--s-4); }
+</style>

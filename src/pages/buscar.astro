@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Icon from '../components/Icon.astro';
+import { productos, nombrePlataforma } from '../data/catalogo';
+const sugerencias = ['psn 20', 'switch 2', 'control xbox series s', 'steam', 'fc 26'];
+---
+<Base title="Buscar">
+  <div class="container">
+    <Breadcrumbs items={[{ nombre: 'Inicio', href: '/' }, { nombre: 'Buscar' }]} />
+    <form class="big-search" action="/buscar/" role="search">
+      <label for="bq" class="visually-hidden">Buscar productos</label>
+      <input id="bq" name="q" type="search" class="input" placeholder="¿Qué buscas? Ej. PSN, Switch 2, control" data-q />
+      <button class="btn btn-primary" aria-label="Buscar"><Icon name="search" /></button>
+    </form>
+    <ul class="chips sugg" aria-label="Búsquedas populares">
+      {sugerencias.map((s) => <li><a class="chip" href={`/buscar/?q=${encodeURIComponent(s)}`}>{s}</a></li>)}
+    </ul>
+
+    <p class="result-line" data-line aria-live="polite"></p>
+    <ul class="grid-products cols-4" data-results>
+      {productos.map((p) => (
+        <li data-text={`${p.nombre} ${nombrePlataforma(p.plataforma)} ${p.sub ?? ''} ${p.categoria} ${p.genero ?? ''} ${p.tipo ?? ''} ${p.slug}`.toLowerCase()}>
+          <ProductCard p={p} />
+        </li>
+      ))}
+    </ul>
+    <div class="empty panel" data-none hidden>
+      <h2>No encontramos “<span data-term></span>”</h2>
+      <p class="muted">Revisa cómo lo escribiste o pregúntanos: podemos conseguirlo bajo pedido.</p>
+      <button class="btn btn-whatsapp" popovertarget="wa-chat"><Icon name="whatsapp" /> Preguntar por WhatsApp</button>
+    </div>
+  </div>
+</Base>
+
+<script>
+  const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const alias: Record<string, string> = { psn: 'playstation network', control: 'mando', controles: 'mando', eshop: 'nintendo eshop', ps5: 'ps5' };
+  const q = new URLSearchParams(location.search).get('q')?.trim() ?? '';
+  const input = document.querySelector<HTMLInputElement>('[data-q]');
+  if (input) input.value = q;
+  const items = [...document.querySelectorAll<HTMLElement>('[data-results] > li')];
+  const line = document.querySelector<HTMLElement>('[data-line]')!;
+  const none = document.querySelector<HTMLElement>('[data-none]')!;
+  if (!q) {
+    line.textContent = 'Todos los productos';
+  } else {
+    const terms = norm(q).split(/\s+/).filter((t) => !/^\$?\d+$/.test(t)).map((t) => alias[t] ?? t);
+    let n = 0;
+    items.forEach((li) => { const ok = terms.every((t) => t.split(' ').every((w) => norm(li.dataset.text!).includes(w))); li.hidden = !ok; if (ok) n++; });
+    line.innerHTML = `<b>${n}</b> resultado${n === 1 ? '' : 's'} para “${q.replace(/[<>&]/g, '')}”`;
+    none.hidden = n > 0;
+    const term = document.querySelector('[data-term]'); if (term) term.textContent = q;
+  }
+</script>
+
+<style>
+  .big-search { display: flex; gap: 0; margin: var(--s-3) 0; max-width: 720px; }
+  .big-search .input { border: var(--border); border-right: 0; min-height: 52px; font-size: var(--t-md); }
+  .big-search .btn { box-shadow: none; }
+  .sugg { margin-bottom: var(--s-5); }
+  .result-line { font-size: var(--t-md); }
+  .empty { text-align: center; display: grid; justify-items: center; gap: var(--s-2); }
+</style>

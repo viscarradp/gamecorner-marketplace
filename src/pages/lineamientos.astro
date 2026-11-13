@@ -1,0 +1,253 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import DeliveryBadge from '../components/DeliveryBadge.astro';
+import PaySeal from '../components/PaySeal.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Icon from '../components/Icon.astro';
+import { getProducto } from '../data/catalogo';
+
+const colores = [
+  { g: 'Marca', items: [
+    { n: 'Negro', v: '--c-ink', hex: '#0E0E10', uso: 'Texto, botón primario, bordes, distintivo de entrega' },
+    { n: 'Señal', v: '--c-signal', hex: '#FFD23F', uso: 'Header, selección, texto sobre negro. Nunca texto sobre blanco' },
+    { n: 'Cobalto', v: '--c-cobalt', hex: '#2949E6', uso: 'Enlaces, foco, sombra del botón primario' },
+  ]},
+  { g: 'Neutros', items: [
+    { n: 'Blanco', v: '--c-white', hex: '#FFFFFF', uso: 'Tarjetas, formularios' },
+    { n: 'Papel', v: '--c-paper', hex: '#F2F2EE', uso: 'Fondo de página' },
+    { n: 'Papel 2', v: '--c-paper-2', hex: '#E7E7E2', uso: 'Placeholders, separadores' },
+    { n: 'Gris texto', v: '--c-muted', hex: '#5C5C63', uso: 'Texto secundario' },
+  ]},
+  { g: 'Estados', items: [
+    { n: 'Éxito', v: '--c-success', hex: '#157A45', uso: 'Pago aprobado, disponible, $0.00' },
+    { n: 'Error', v: '--c-error', hex: '#C62A1F', uso: 'Pago rechazado, errores' },
+    { n: 'WhatsApp', v: '--c-whatsapp', hex: '#1A8048', uso: 'Solo botones y enlaces de WhatsApp' },
+  ]},
+];
+const contraste = [
+  ['Negro sobre Blanco', '19.3:1', 'AAA'], ['Negro sobre Señal', '13.4:1', 'AAA'], ['Señal sobre Negro', '13.4:1', 'AAA'],
+  ['Cobalto sobre Blanco', '6.6:1', 'AA'], ['Gris texto sobre Blanco', '6.6:1', 'AA'], ['Gris texto sobre Papel', '5.9:1', 'AA'],
+  ['Blanco sobre Éxito', '5.4:1', 'AA'], ['Blanco sobre WhatsApp', '5.0:1', 'AA'], ['Error sobre Error suave', '4.6:1', 'AA'],
+  ['Señal sobre Blanco', '1.4:1', 'Prohibido'],
+];
+const psn = getProducto('tarjeta-psn')!;
+const ps5 = getProducto('playstation-5-slim')!;
+const oferta = getProducto('nintendo-switch-oled')!;
+---
+<Base title="Lineamientos visuales" description="Sistema visual Cartucho de Game Corner Store.">
+  <div class="container guide">
+    <header class="g-head">
+      <p class="label label-cobalt">Game Corner Store · Sistema “Cartucho”</p>
+      <h1>Lineamientos visuales</h1>
+      <p>Directo y con energía de cultura gamer, pero sin perder la confianza al momento de pagar. Contraste fuerte, amarillo señal y sombras duras en la tienda; una versión más calmada en el checkout.</p>
+      <nav aria-label="Secciones"><ul class="chips chips-scroll">
+        {['Principios', 'Logotipo', 'Color', 'Tipografía', 'Espaciado', 'Íconos', 'Componentes', 'Tono de voz', 'Checkout'].map((s) => <li><a class="chip" href={`#${s.toLowerCase().replace(/ /g, '-').normalize('NFD').replace(/[̀-ͯ]/g, '')}`}>{s}</a></li>)}
+      </ul></nav>
+    </header>
+
+    <section id="principios" class="g-sec">
+      <h2>Principios</h2>
+      <ol class="principles">
+        <li><b>El precio final manda.</b><span>El precio es el texto más grande después del nombre del producto. Nunca aparece un cargo que no se haya mostrado antes de pagar.</span></li>
+        <li><b>Plazos claros, nunca “inmediato”.</b><span>“Hasta 24 h” siempre visible debajo del botón de compra en productos digitales.</span></li>
+        <li><b>Confianza visible.</b><span>Logos de Wompi y Banco Agrícola junto a cada acción de pago. WhatsApp a un toque en todas las pantallas.</span></li>
+        <li><b>Energía en la tienda, calma en el pago.</b><span>Sombras duras y amarillo al explorar; bordes suaves y sin sombras al pedir datos.</span></li>
+        <li><b>Contenido real, no adornos.</b><span>Sin degradados, sin efectos de vidrio, sin emojis. La personalidad viene del contraste y del tono.</span></li>
+      </ol>
+    </section>
+
+    <section id="logotipo" class="g-sec">
+      <h2>Logotipo</h2>
+      <p>Isotipo de mando con los botones en cobalto, acompañado del logotipo “Game<b style="color:var(--c-cobalt)">Corner</b>” en Archivo 800 y la etiqueta pixelada “Store”. Archivos en <code>/public/logo/</code>.</p>
+      <div class="logos">
+        <figure class="lg lg-signal"><span class="lockup"><img src="/logo/logo-cartucho.svg" alt="" width="48" height="30" />Game<span>Corner</span><small class="label">Store</small></span><figcaption>Principal · sobre señal o blanco · <code>logo-cartucho.svg</code></figcaption></figure>
+        <figure class="lg lg-ink"><span class="lockup"><img src="/logo/logo-cartucho-dark.svg" alt="" width="48" height="30" />Game<span>Corner</span><small class="label">Store</small></span><figcaption>Negativo · sobre negro · <code>logo-cartucho-dark.svg</code></figcaption></figure>
+        <figure class="lg lg-white"><span class="lockup mono"><img src="/logo/logo-mono.svg" alt="" width="48" height="30" />GameCorner</span><figcaption>Una tinta · impresos y sellos · <code>logo-mono.svg</code></figcaption></figure>
+        <figure class="lg lg-white"><span class="favs"><img src="/logo/favicon-cartucho.svg" alt="" width="64" height="64" /><img src="/logo/favicon-cartucho.svg" alt="" width="32" height="32" /><img src="/logo/favicon-cartucho.svg" alt="" width="16" height="16" /></span><figcaption>Favicon · 64 / 32 / 16 px · <code>favicon-cartucho.svg</code></figcaption></figure>
+      </div>
+      <ul class="small rules">
+        <li>Altura mínima del isotipo: 20 px en pantalla. Espacio libre alrededor: al menos la altura de un botón del mando.</li>
+        <li>El isotipo usa puntas redondeadas: es la única excepción a la regla de íconos con terminaciones cuadradas.</li>
+        <li>No cambiar los colores de los botones, no girar, no agregar sombras ni contornos.</li>
+        <li>A 16 px el favicon pierde detalle; conviene una versión simplificada para ese tamaño.</li>
+      </ul>
+    </section>
+
+    <section id="color" class="g-sec">
+      <h2>Color</h2>
+      {colores.map((g) => (
+        <>
+          <h3>{g.g}</h3>
+          <ul class="swatches">
+            {g.items.map((c) => (
+              <li><span class="sw" style={`background: var(${c.v})`}></span><b>{c.n}</b><code>{c.hex}</code><code>{c.v}</code><span class="small muted">{c.uso}</span></li>
+            ))}
+          </ul>
+        </>
+      ))}
+      <h3>Proporción</h3>
+      <div class="ratio" aria-label="Proporción de uso aproximada">
+        <span style="flex:60;background:var(--c-paper)">Papel/Blanco 60 %</span>
+        <span style="flex:25;background:var(--c-ink);color:var(--c-signal)">Negro 25 %</span>
+        <span style="flex:10;background:var(--c-signal)">Señal 10 %</span>
+        <span style="flex:5;background:var(--c-cobalt);color:#fff">5 %</span>
+      </div>
+      <h3>Contraste (WCAG)</h3>
+      <table class="tbl">
+        <thead><tr><th>Combinación</th><th>Ratio</th><th>Nivel</th></tr></thead>
+        <tbody>{contraste.map(([a, b, c]) => <tr class={c === 'Prohibido' ? 'bad' : undefined}><td>{a}</td><td>{b}</td><td>{c}</td></tr>)}</tbody>
+      </table>
+    </section>
+
+    <section id="tipografia" class="g-sec">
+      <h2>Tipografía</h2>
+      <div class="type-rows">
+        <div><span class="label muted">Archivo 800 · Titulares y precios</span><p class="t1">Recargas, juegos y consolas con precio final.</p></div>
+        <div><span class="label muted">IBM Plex Sans 400/600/700 · Texto, botones, formularios</span><p class="t2">Pagas con tu tarjeta de débito local a través de Wompi. Te avisamos por WhatsApp cuando tu pedido va en camino.</p></div>
+        <div><span class="label muted">Silkscreen · Solo etiquetas cortas en mayúsculas</span><p><span class="label label-cobalt">Código digital</span> &nbsp; <span class="label">Oferta</span> &nbsp; <span class="label">Preventa</span></p><p class="small muted">Máximo 3 palabras. Nunca para precios, botones, avisos ni texto que haya que leer con atención.</p></div>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>Token</th><th>Tamaño</th><th>Uso</th></tr></thead>
+        <tbody>
+          <tr><td>--t-3xl</td><td>36–56 px</td><td>Titular de portada</td></tr>
+          <tr><td>--t-2xl</td><td>32 px (40 en escritorio)</td><td>H1 de página</td></tr>
+          <tr><td>--t-xl</td><td>24 px</td><td>H2 de sección</td></tr>
+          <tr><td>--t-lg</td><td>20 px</td><td>H3, precio en tarjeta</td></tr>
+          <tr><td>--t-md</td><td>16 px</td><td>Texto base, botones, campos (evita zoom en iOS)</td></tr>
+          <tr><td>--t-sm</td><td>14 px</td><td>Texto secundario, notas</td></tr>
+          <tr><td>--t-xs</td><td>12 px</td><td>Metadatos, migas de pan</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="espaciado" class="g-sec">
+      <h2>Espaciado y retícula</h2>
+      <p>Base de 4 px. Margen lateral de 16 px en móvil. Contenedor máximo de 1200 px. Puntos de quiebre: 480, 768, 900 y 1100 px. Esquinas siempre rectas (radio 0).</p>
+      <div class="spaces">{[4, 8, 12, 16, 24, 32, 48, 64].map((s, i) => <div><span style={`width:${s}px;height:${s}px`}></span><code>--s-{i + 1} · {s}px</code></div>)}</div>
+      <p class="small muted">Área táctil mínima: 44 × 44 px. Botones de 48 px de alto.</p>
+    </section>
+
+    <section id="iconos" class="g-sec">
+      <h2>Íconos</h2>
+      <p>Trazo de 2 px, terminaciones cuadradas, 20–24 px. Siempre acompañados de texto, salvo buscar, carrito, menú y cerrar.</p>
+      <ul class="icons">{['search', 'cart', 'menu', 'clock', 'truck', 'lock', 'shield', 'card', 'refresh', 'tag', 'whatsapp', 'mail', 'check', 'alert', 'info', 'gamepad'].map((n) => <li><Icon name={n} size={24} /><code>{n}</code></li>)}</ul>
+    </section>
+
+    <section id="componentes" class="g-sec">
+      <h2>Componentes</h2>
+
+      <h3>Botones</h3>
+      <div class="row">
+        <a class="btn btn-primary" href="#componentes">Agregar al carrito</a>
+        <a class="btn btn-secondary" href="#componentes">Ver consolas</a>
+        <a class="btn btn-signal" href="#componentes">Destacado</a>
+        <button class="btn btn-whatsapp" type="button"><Icon name="whatsapp" /> WhatsApp</button>
+      </div>
+      <p class="small muted">Un solo botón primario por pantalla. El primario es negro con texto amarillo y sombra cobalto; al presionarlo, la sombra se “hunde”.</p>
+
+      <h3>Distintivo de entrega + sello de pago</h3>
+      <p class="small muted">Hallazgo del testeo: el aviso de entrega va <b>inmediatamente debajo</b> del botón de compra, y los logos de pago justo después.</p>
+      <div class="demo-buy">
+        <a class="btn btn-primary btn-block" href="#componentes"><Icon name="cart" /> Agregar al carrito</a>
+        <DeliveryBadge tipo="digital" />
+        <PaySeal />
+      </div>
+      <div class="demo-buy"><DeliveryBadge tipo="fisico" /></div>
+
+      <h3>Tarjetas de producto</h3>
+      <ul class="grid-products demo-cards">
+        <li><ProductCard p={psn} /></li><li><ProductCard p={ps5} /></li><li><ProductCard p={oferta} /></li>
+      </ul>
+
+      <h3>Chips y migas de pan</h3>
+      <ul class="chips"><li><a class="chip" aria-current="page" href="#componentes">PS5</a></li><li><a class="chip" href="#componentes">Switch</a></li><li><a class="chip" href="#componentes">Switch 2</a></li><li><a class="chip" href="#componentes">Xbox</a></li></ul>
+      <Breadcrumbs items={[{ nombre: 'Inicio', href: '/' }, { nombre: 'Códigos y saldo digital', href: '/codigos-saldo-digital/' }, { nombre: 'Tarjeta PSN' }]} />
+
+      <h3>Alertas</h3>
+      <div class="alerts">
+        <div class="alert alert-info"><Icon name="info" /><p>Solo para cuentas de PlayStation de Estados Unidos.</p></div>
+        <div class="alert alert-warn"><Icon name="alert" /><p>Pocas unidades disponibles.</p></div>
+        <div class="alert alert-success"><Icon name="check" /><p><b>¡Pago confirmado!</b> Pedido GC-10482.</p></div>
+        <div class="alert alert-error"><Icon name="alert" /><p><b>Tu banco no aprobó el pago.</b> No se te cobró nada.</p></div>
+      </div>
+
+      <h3>Marcador “por confirmar”</h3>
+      <p>Propio del wireframe: <span class="tbd">Tarifa por confirmar</span> señala datos que el Plan de Marketing pide validar antes de publicar (tarifas, horarios, métodos de pago, plazos de entrega física).</p>
+    </section>
+
+    <section id="tono-de-voz" class="g-sec">
+      <h2>Tono de voz</h2>
+      <p>Directo, cercano y en español salvadoreño neutro (tú, no vos ni usted). Frases cortas. Primero lo que importa: precio, plazo, qué pasa después.</p>
+      <table class="tbl voice">
+        <thead><tr><th>Situación</th><th>Sí</th><th>No</th></tr></thead>
+        <tbody>
+          <tr><td>Plazo digital</td><td>Recibes tu código en hasta 24 h por WhatsApp o correo.</td><td>¡Entrega inmediata! / Al instante</td></tr>
+          <tr><td>Precio</td><td>$22.00 · Precio final. Sin cargos extra.</td><td>Desde $20 + comisión</td></tr>
+          <tr><td>Pago rechazado</td><td>Tu banco no aprobó el pago. No se te cobró nada.</td><td>Error 402: transacción fallida</td></tr>
+          <tr><td>Métodos de pago</td><td>Tarjetas de débito y crédito de bancos salvadoreños, vía Wompi.</td><td>Aceptamos todos los métodos de pago</td></tr>
+          <tr><td>Reseñas</td><td>Reseñas reales, publicadas con autorización.</td><td>Testimonios inventados o “verificados” sin prueba</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="checkout" class="g-sec">
+      <h2>Modo checkout (“calmado”)</h2>
+      <p>Al pedir datos personales y de pago se quita el ruido: encabezado mínimo sin menú de categorías, sin sombras duras en paneles, bordes de 1.5 px y botón primario único. Se mantienen el botón de WhatsApp, el distintivo de entrega y los logos de pago.</p>
+      <div class="split">
+        <div class="panel panel-shadow"><span class="label muted">Tienda</span><p>Panel con borde de 2 px y sombra dura.</p></div>
+        <div class="panel calm"><span class="label muted">Checkout</span><p>Panel con borde suave y sin sombra.</p></div>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .guide { max-width: 1040px; }
+  .g-head { padding: var(--s-5) 0 var(--s-3); }
+  .g-head p:not(.label) { max-width: 62ch; font-size: 1.0625rem; }
+  .g-sec { padding-top: var(--s-7); scroll-margin-top: 150px; }
+  .g-sec > h2 { font-size: var(--t-2xl); border-bottom: var(--border); padding-bottom: var(--s-2); }
+  .g-sec h3 { margin-top: var(--s-5); font-size: var(--t-md); }
+  .principles { margin: 0; padding-left: 24px; display: grid; gap: var(--s-3); }
+  .principles b, .principles span { display: block; }
+  .principles span { color: var(--c-muted); font-size: var(--t-sm); }
+  .swatches { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--s-3); }
+  .swatches li { display: grid; gap: 2px; background: var(--c-white); border: var(--border); padding-bottom: var(--s-3); }
+  .swatches li > *:not(.sw) { padding-inline: var(--s-3); }
+  .sw { height: 64px; border-bottom: var(--border); margin-bottom: 6px; }
+  .swatches code { font-size: var(--t-xs); color: var(--c-muted); }
+  .ratio { display: flex; border: var(--border); height: 48px; font-size: var(--t-xs); font-weight: 600; }
+  .ratio span { display: grid; place-items: center; overflow: hidden; white-space: nowrap; }
+  .tbl { width: 100%; border-collapse: collapse; background: var(--c-white); border: var(--border); font-size: var(--t-sm); margin-top: var(--s-3); }
+  .tbl th, .tbl td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--c-paper-2); vertical-align: top; }
+  .tbl th { background: var(--c-ink); color: var(--c-signal); }
+  .tbl .bad td { color: var(--c-error); font-weight: 600; }
+  .voice td:nth-child(3) { color: var(--c-error); text-decoration: line-through; }
+  .type-rows { display: grid; gap: var(--s-5); }
+  .t1 { font: 800 var(--t-3xl)/1.05 var(--f-display); letter-spacing: -0.02em; margin: 6px 0 0; }
+  .t2 { font-size: var(--t-lg); max-width: 50ch; margin: 6px 0 0; }
+  .spaces { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: flex-end; margin-bottom: var(--s-3); }
+  .spaces div { display: grid; gap: 6px; justify-items: start; }
+  .spaces span { background: var(--c-cobalt); }
+  .spaces code { font-size: var(--t-xs); }
+  .icons { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: var(--s-2); }
+  .icons li { display: grid; justify-items: center; gap: 6px; padding: var(--s-3); background: var(--c-white); border: 1.5px solid var(--c-paper-2); }
+  .icons code { font-size: 0.6875rem; color: var(--c-muted); }
+  .row { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+  .demo-buy { max-width: 420px; display: grid; gap: 8px; margin-bottom: var(--s-4); }
+  .demo-cards { max-width: 760px; }
+  .logos { display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); margin: var(--s-4) 0; }
+  .lg { margin: 0; border: var(--border); display: grid; }
+  .lg > span { display: flex; align-items: center; justify-content: center; min-height: 120px; padding: var(--s-4); }
+  .lg figcaption { padding: 8px 12px; font-size: var(--t-xs); background: var(--c-white); border-top: var(--border); color: var(--c-muted); }
+  .lg-signal > span { background: var(--c-signal); } .lg-ink > span { background: var(--c-ink); color: #fff; } .lg-white > span { background: var(--c-white); }
+  .lockup { gap: 2px; font: 800 1.6rem/1 var(--f-display); letter-spacing: -0.03em; }
+  .lockup img { margin-right: 8px; }
+  .lockup span { color: var(--c-cobalt); } .lg-ink .lockup span, .lg-ink .lockup small { color: var(--c-signal); }
+  .lockup small { margin-left: 6px; font-size: .6rem; }
+  .lockup.mono { color: var(--c-ink); }
+  .favs { gap: var(--s-4); align-items: flex-end !important; }
+  .rules { margin: 0; padding-left: 20px; display: grid; gap: 4px; color: var(--c-muted); }
+  .alerts { display: grid; gap: var(--s-2); max-width: 620px; }
+</style>

@@ -1,0 +1,190 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import PaySeal from '../components/PaySeal.astro';
+import Icon from '../components/Icon.astro';
+import Media from '../components/Media.astro';
+import { getImagen } from '../data/imagenes';
+import { categorias, productos, getProducto } from '../data/catalogo';
+
+// Recarga rápida: acceso directo a los códigos más buscados (regla de los tres clics:
+// Inicio → ficha PSN es 1 clic; Inicio → Códigos → ficha PSN son 2).
+const rapida = [
+  { slug: 'tarjeta-psn', logo: 'logo-playstation', nombre: 'PlayStation', sub: 'PSN $10 · $20 · $50' },
+  { slug: 'tarjeta-eshop', logo: 'logo-nintendo', nombre: 'Nintendo eShop', sub: '$10 · $20 · $50' },
+  { slug: 'steam-wallet', logo: 'logo-steam', nombre: 'Steam', sub: '$20 · $50' },
+  { slug: 'tarjeta-google-play', logo: 'logo-google-play', nombre: 'Google Play', sub: '$10 · $25' },
+  { slug: 'tarjeta-xbox', logo: 'logo-xbox', nombre: 'Xbox', sub: '$10 · $25 · $50' },
+];
+const destacados = productos.filter((p) => p.destacado && p.linea === 'fisico').slice(0, 4);
+const ofertas = productos.filter((p) => p.precioAntes).slice(0, 4);
+const catIcon: Record<string, string> = { 'codigos-saldo-digital': 'card', consolas: 'gamepad', videojuegos: 'gamepad', accesorios: 'gamepad', ofertas: 'tag' };
+---
+<Base title="Recargas, juegos y consolas en El Salvador">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <p class="label label-cobalt">Tienda salvadoreña de videojuegos</p>
+        <h1>Recargas, juegos y consolas con precio final.</h1>
+        <p class="hero-lead">Paga con tu tarjeta de débito local, sin tarjeta internacional. Te acompañamos por WhatsApp hasta que tengas tu código o tu consola.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="/codigos-saldo-digital/">Comprar saldo digital</a>
+          <a class="btn btn-secondary" href="/consolas/">Ver consolas</a>
+        </div>
+        <PaySeal />
+      </div>
+      <div class="hero-art">
+        <Media slug="hero" class="ph-wide" fit="cover" label="Imagen principal: tarjetas PSN / eShop y consola" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Recarga rápida -->
+  <section class="section quick" aria-labelledby="rapida">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="rapida">Recarga rápida</h2>
+        <a href="/codigos-saldo-digital/">Ver todos los códigos</a>
+      </div>
+      <ul class="quick-grid">
+        {rapida.map((r) => (
+          <li>
+            <a class="quick-card" href={`/producto/${r.slug}/`}>
+              <span class={`quick-ph${getImagen(r.logo) ? ' has-logo' : ''}`} aria-hidden="true"><span class="logo-text">Logo</span>{getImagen(r.logo) && <img class="logo-img" src={getImagen(r.logo)!.file} alt="" />}</span>
+              <span><b>{r.nombre}</b><small>{r.sub}</small></span>
+              <Icon name="chevron" />
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p class="quick-note"><Icon name="clock" size={16} /> <span>Códigos de EE. UU. Recibes tu código en <b>hasta 24 h</b> después de confirmar tu pago.</span></p>
+    </div>
+  </section>
+
+  <!-- Categorías -->
+  <section class="section cats" aria-labelledby="cats">
+    <div class="container">
+      <h2 id="cats">Compra por categoría</h2>
+      <ul class="cat-grid">
+        {categorias.map((c) => (
+          <li class={c.slug === 'codigos-saldo-digital' ? 'is-main' : undefined}>
+            <a href={`/${c.slug}/`}>
+              <Icon name={catIcon[c.slug]} size={28} />
+              <b>{c.nombre}</b>
+              <span>{c.desc}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <h3 class="plat-title">O por plataforma</h3>
+      <ul class="chips chips-scroll">
+        <li><a class="chip" href="/juegos-playstation/">PlayStation</a></li>
+        <li><a class="chip" href="/juegos-nintendo/switch/">Nintendo Switch</a></li>
+        <li><a class="chip" href="/juegos-nintendo/switch-2/">Switch 2</a></li>
+        <li><a class="chip" href="/juegos-pc/">PC</a></li>
+        <li><a class="chip" href="/codigos-saldo-digital/#movil">Celular</a></li>
+        <li><a class="chip" href="/juegos-xbox/">Xbox</a></li>
+        <li><a class="chip" href="/mandos/">Mandos</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Cómo funciona -->
+  <section class="section how" aria-labelledby="how">
+    <div class="container">
+      <div class="section-head"><h2 id="how">Así compras un código</h2><a href="/ayuda/#como-comprar">Guía completa</a></div>
+      <ol class="steps" style="--n:4">
+        <li><h3>Elige el monto</h3><p>Ves el precio final en dólares antes de pagar. Sin cargos ocultos.</p></li>
+        <li><h3>Paga con Wompi</h3><p>Con tu tarjeta de débito o crédito local, en la página segura de Wompi.</p></li>
+        <li><h3>Confirmamos tu pago</h3><p>Revisamos el pedido y te avisamos por WhatsApp.</p></li>
+        <li><h3>Recibe tu código</h3><p>Por WhatsApp o correo en hasta 24 horas. Si no funciona, te lo reponemos.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Destacados físicos -->
+  <section class="section" aria-labelledby="dest">
+    <div class="container">
+      <div class="section-head"><h2 id="dest">Consolas y juegos</h2><a href="/consolas/">Ver consolas</a></div>
+      <ul class="grid-products cols-4">{destacados.map((p) => <li><ProductCard p={p} /></li>)}</ul>
+    </div>
+  </section>
+
+  <!-- Ofertas -->
+  <section class="section offers" aria-labelledby="ofer">
+    <div class="container">
+      <div class="section-head"><h2 id="ofer">Ofertas y liquidación</h2><a href="/ofertas/">Ver todas</a></div>
+      <ul class="grid-products cols-4">{ofertas.map((p) => <li><ProductCard p={p} /></li>)}</ul>
+    </div>
+  </section>
+
+  <!-- Confianza -->
+  <section class="section trust" aria-labelledby="trust">
+    <div class="container">
+      <h2 id="trust">Compra a una tienda local, no a un perfil anónimo</h2>
+      <ul class="trust-grid">
+        <li><Icon name="tag" size={28} /><b>Precio final</b><span>El precio que ves es el que pagas. El envío a domicilio se muestra antes de pagar.</span></li>
+        <li><Icon name="card" size={28} /><b>Pago local</b><span>Wompi acepta tarjetas de débito y crédito de bancos salvadoreños.</span></li>
+        <li><Icon name="whatsapp" size={28} /><b>Te respondemos</b><span>Atención por WhatsApp en horario publicado.</span></li>
+        <li><Icon name="refresh" size={28} /><b>Reposición</b><span>Si tu código no funciona, te lo reponemos.</span></li>
+      </ul>
+      <div class="reviews">
+        <h3>Lo que dicen nuestros compradores <span class="tbd">Reseñas de ejemplo: se publicarán solo reseñas reales con autorización</span></h3>
+        <ul>
+          <li class="review"><span class="stars" aria-label="5 de 5">★★★★★</span><blockquote>“Reseña de ejemplo sobre una tarjeta PSN recibida por WhatsApp.”</blockquote><footer>[Nombre con autorización] · Santa Tecla</footer></li>
+          <li class="review"><span class="stars" aria-label="5 de 5">★★★★★</span><blockquote>“Reseña de ejemplo sobre la entrega de una consola en San Salvador.”</blockquote><footer>[Nombre con autorización] · San Salvador</footer></li>
+          <li class="review"><span class="stars" aria-label="4 de 5">★★★★☆</span><blockquote>“Reseña de ejemplo sobre el pago con débito local.”</blockquote><footer>[Nombre con autorización] · Antiguo Cuscatlán</footer></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { background: var(--c-white); border-bottom: var(--border); }
+  .hero-inner { display: grid; gap: var(--s-5); padding-block: var(--s-6); }
+  .hero h1 { font-size: var(--t-3xl); margin-bottom: var(--s-4); max-width: 14ch; }
+  .hero-lead { font-size: 1.0625rem; max-width: 46ch; }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: var(--s-3); margin: var(--s-5) 0; }
+  .hero-ctas .btn { flex: 1 1 200px; }
+  .hero-art .ph { border: var(--border); box-shadow: var(--shadow-card); }
+  @media (min-width: 900px) { .hero-inner { grid-template-columns: 1.1fr 1fr; align-items: center; padding-block: var(--s-8); } .hero-ctas .btn { flex: 0 0 auto; } }
+
+  .quick { background: var(--c-paper); }
+  .quick-grid { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 600px) { .quick-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .quick-grid { grid-template-columns: repeat(5, 1fr); } }
+  .quick-card { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3); background: var(--c-white); border: var(--border); color: var(--c-ink); text-decoration: none; box-shadow: var(--shadow-card-sm); }
+  .quick-card:hover { background: var(--c-signal-soft); }
+  .quick-card > span:nth-child(2) { flex: 1; }
+  .quick-card b { display: block; }
+  .quick-card small { color: var(--c-muted); font-size: var(--t-xs); }
+  .quick-ph :global(.logo-img) { max-width: 52px; height: 36px; }
+  .quick-ph { width: 60px; height: 48px; flex: none; display: grid; place-items: center; background: var(--c-paper-2); font-size: 0.625rem; color: var(--c-muted); }
+  .quick-note { display: flex; gap: 8px; align-items: center; margin: var(--s-4) 0 0; font-size: var(--t-sm); }
+
+  .cats { background: var(--c-white); border-block: var(--border); }
+  .cat-grid { list-style: none; padding: 0; margin: 0 0 var(--s-5); display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-3); }
+  .cat-grid .is-main { grid-column: 1 / -1; }
+  @media (min-width: 900px) { .cat-grid { grid-template-columns: repeat(5, 1fr); } .cat-grid .is-main { grid-column: auto; } }
+  .cat-grid a { display: grid; gap: 6px; height: 100%; padding: var(--s-4); border: var(--border); color: var(--c-ink); text-decoration: none; background: var(--c-paper); }
+  .cat-grid .is-main a { background: var(--c-signal); }
+  .cat-grid a:hover { box-shadow: var(--shadow-card-sm); transform: translate(-2px, -2px); }
+  .cat-grid b { font: 800 var(--t-md)/1.15 var(--f-display); }
+  .cat-grid span { font-size: var(--t-xs); color: var(--c-muted); }
+  .cat-grid .is-main span { color: var(--c-ink); }
+  .plat-title { font-size: var(--t-md); }
+
+  .how { background: var(--c-paper); }
+  .offers { background: var(--c-white); border-block: var(--border); }
+
+  .trust-grid { list-style: none; padding: 0; margin: 0 0 var(--s-6); display: grid; gap: var(--s-4); grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 900px) { .trust-grid { grid-template-columns: repeat(4, 1fr); } }
+  .trust-grid li { display: grid; gap: 6px; align-content: start; }
+  .trust-grid span { font-size: var(--t-sm); color: var(--c-muted); }
+  .reviews h3 { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: var(--t-md); }
+  .reviews .tbd { white-space: normal; }
+  .reviews ul { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 768px) { .reviews ul { grid-template-columns: repeat(3, 1fr); } }
+</style>

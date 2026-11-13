@@ -1,0 +1,262 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import DeliveryBadge from '../../components/DeliveryBadge.astro';
+import PaySeal from '../../components/PaySeal.astro';
+import Icon from '../../components/Icon.astro';
+import Media from '../../components/Media.astro';
+import { productos, usd, nombrePlataforma, nombreCategoria, municipiosAMSS, ENVIO_AMSS, type Producto } from '../../data/catalogo';
+
+export function getStaticPaths() {
+  return productos.map((p) => ({ params: { slug: p.slug }, props: { p } }));
+}
+const { p } = Astro.props as { p: Producto };
+const digital = p.linea === 'digital';
+const montoInicial = p.montos ? (p.montos.find((m) => m.valor === 20) ?? p.montos[0]) : undefined;
+const precio = montoInicial?.precio ?? p.precio ?? 0;
+const catHref = `/${p.categoria}/`;
+const migas = [
+  { nombre: 'Inicio', href: '/' },
+  { nombre: nombreCategoria(p.categoria), href: catHref },
+  ...(digital ? [{ nombre: nombrePlataforma(p.plataforma), href: `/codigos-saldo-digital/#${p.plataforma}` }] : []),
+  { nombre: p.nombre },
+];
+const disp = { inmediata: 'Disponible', pocas: 'Pocas unidades', preventa: 'Preventa' }[p.disponibilidad];
+const relacionados = productos.filter((x) => x.slug !== p.slug && (x.plataforma === p.plataforma || x.categoria === p.categoria)).slice(0, 4);
+---
+<Base title={p.nombre} description={p.resumen}>
+  <div class="container">
+    <Breadcrumbs items={migas} />
+
+    <div class="pdp">
+      <div class="gallery">
+        <Media slug={p.slug} class="ph-square main-ph" label={`Foto ${digital ? 'de la tarjeta' : 'del producto'}`} />
+        {!digital && (
+          <ul class="thumbs" aria-label="Más fotos">
+            {[1, 2, 3, 4].map((n) => <li class="ph ph-square"><span>{n}</span></li>)}
+          </ul>
+        )}
+      </div>
+
+      <div class="buybox">
+        <p class="label label-cobalt">{digital ? 'Código digital · Cuenta de EE. UU.' : `${nombrePlataforma(p.plataforma)} · ${p.condicion === 'nuevo' ? 'Nuevo' : 'Seminuevo'}`}</p>
+        <h1>{p.nombre}</h1>
+        <p class="muted">{p.resumen}</p>
+
+        {p.compat && (
+          <div class="alert alert-warn compat">
+            <Icon name="info" />
+            <p><b>{p.compat}</b> ¿No sabes la región de tu cuenta? <button class="btn-link" popovertarget="wa-chat">Pregúntanos</button>.</p>
+          </div>
+        )}
+
+        {!digital && (
+          <p class={`stock stock-${p.disponibilidad}`}><span class="dot" aria-hidden="true"></span> <span><b>{disp}</b>
+            {p.disponibilidad === 'preventa' ? ' · Te avisamos por WhatsApp cuando llegue.' : ' · Listo para entrega a domicilio.'}</span></p>
+        )}
+
+        {p.montos && (
+          <fieldset class="amounts">
+            <legend>Elige el monto</legend>
+            <div class="amount-row">
+              {p.montos.map((m) => (
+                <label class="amount">
+                  <input type="radio" name="monto" value={m.valor} data-precio={m.precio} checked={m.valor === montoInicial?.valor} />
+                  <span>${m.valor}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
+
+        <div class="price-row">
+          <span class="price price-lg" data-price>{usd(precio)}</span>
+          {p.precioAntes && <span class="price-old">{usd(p.precioAntes)}</span>}
+          <span class="price-note">{digital ? 'Precio final. Sin cargos extra.' : `Precio final. Envío AMSS: ${usd(ENVIO_AMSS)}, se muestra antes de pagar.`}</span>
+        </div>
+
+        {digital && (
+          <div class="channels">
+            <p class="small"><b>Lo recibes por:</b></p>
+            <ul>
+              <li><Icon name="whatsapp" size={18} /> WhatsApp</li>
+              <li><Icon name="mail" size={18} /> Correo electrónico</li>
+            </ul>
+            <p class="small muted">Eliges el canal al pagar. Puedes elegir los dos.</p>
+          </div>
+        )}
+
+        {!digital && (
+          <div class="coverage">
+            <label class="small" for="municipio"><b>¿Entregamos en tu municipio?</b></label>
+            <select id="municipio" class="select" data-municipio>
+              <option value="">Elige tu municipio</option>
+              {municipiosAMSS.map((m) => <option>{m}</option>)}
+              <option value="fuera">Otro municipio fuera del AMSS</option>
+            </select>
+            <p class="small coverage-msg" data-cov aria-live="polite"></p>
+          </div>
+        )}
+
+        <button class="btn btn-primary btn-block add" type="button" data-add={p.slug}>
+          <Icon name="cart" /> {p.disponibilidad === 'preventa' ? 'Reservar en preventa' : 'Agregar al carrito'}
+        </button>
+        <DeliveryBadge tipo={p.linea} />
+        <PaySeal />
+
+        <ul class="assurances">
+          {digital
+            ? <li><Icon name="refresh" size={18} /> Si tu código no funciona, te lo reponemos.</li>
+            : <li><Icon name="shield" size={18} /> Garantía de tienda <span class="tbd">plazo por confirmar</span></li>}
+          <li><Icon name="whatsapp" size={18} /> <button class="btn-link" popovertarget="wa-chat">¿Dudas? Escríbenos por WhatsApp</button></li>
+        </ul>
+      </div>
+    </div>
+
+    {digital ? (
+      <section class="section" aria-labelledby="como">
+        <h2 id="como">Cómo recibes tu código</h2>
+        <ol class="steps" style="--n:4">
+          <li><h3>Pagas con Wompi</h3><p>Con tarjeta de débito o crédito local.</p></li>
+          <li><h3>Confirmamos tu pago</h3><p>Wompi nos avisa y revisamos el pedido para protegerte de fraudes.</p></li>
+          <li><h3>Te enviamos el código</h3><p>Por WhatsApp o correo en hasta 24 horas.</p></li>
+          <li><h3>Lo canjeas</h3><p>En la tienda de tu consola. Te mandamos los pasos con el código.</p></li>
+        </ol>
+      </section>
+    ) : (
+      <section class="section" aria-labelledby="como">
+        <h2 id="como">Cómo recibes tu pedido</h2>
+        <ol class="steps" style="--n:4">
+          <li><h3>Pagas con Wompi</h3><p>Con tarjeta de débito o crédito local.</p></li>
+          <li><h3>Coordinamos la entrega</h3><p>Te escribimos por WhatsApp para acordar día y hora.</p></li>
+          <li><h3>Va en camino</h3><p>Te avisamos cuando salga hacia tu dirección.</p></li>
+          <li><h3>Lo recibes</h3><p>Revisa el producto al recibirlo.</p></li>
+        </ol>
+      </section>
+    )}
+
+    <div class="split details">
+      <section aria-labelledby="det">
+        <h2 id="det">Detalles</h2>
+        <dl class="specs">
+          <dt>Plataforma</dt><dd>{nombrePlataforma(p.plataforma)}</dd>
+          <dt>Tipo</dt><dd>{digital ? 'Código digital' : nombreCategoria(p.categoria)}</dd>
+          {digital && <><dt>Región</dt><dd>Estados Unidos</dd></>}
+          {digital && <><dt>Entrega</dt><dd>WhatsApp o correo, hasta 24 h</dd></>}
+          {!digital && <><dt>Condición</dt><dd>{p.condicion === 'nuevo' ? 'Nuevo, sellado' : 'Seminuevo, revisado'}</dd></>}
+          {!digital && <><dt>Entrega</dt><dd>Domicilio en el AMSS</dd></>}
+          <dt>Moneda</dt><dd>Dólares (USD), sin conversión</dd>
+        </dl>
+      </section>
+      <section class="faq" aria-labelledby="faq">
+        <h2 id="faq">Preguntas frecuentes</h2>
+        {digital ? (
+          <>
+            <details><summary>¿Cuánto tarda en llegar el código?</summary><div>Hasta 24 horas después de confirmar tu pago. Normalmente es menos, pero no lo garantizamos: revisamos cada pedido para evitar fraudes.</div></details>
+            <details><summary>¿Puedo pagar con mi tarjeta de débito?</summary><div>Sí. Wompi acepta tarjetas de débito y crédito de bancos salvadoreños, como Banco Agrícola.</div></details>
+            <details><summary>¿Qué pasa si el código no funciona?</summary><div>Escríbenos por WhatsApp con tu número de pedido y una captura del error. Te lo reponemos.</div></details>
+            <details><summary>¿Funciona con mi cuenta de El Salvador?</summary><div>Este código es para cuentas de Estados Unidos. Si tu cuenta es de otra región, pregúntanos antes de comprar.</div></details>
+          </>
+        ) : (
+          <>
+            <details><summary>¿Cuánto cuesta el envío?</summary><div>{usd(ENVIO_AMSS)} dentro del Área Metropolitana de San Salvador. Lo ves en el carrito antes de pagar. <span class="tbd">Tarifa por confirmar</span></div></details>
+            <details><summary>¿Cuándo llega?</summary><div>Coordinamos contigo día y hora por WhatsApp después de confirmar tu pago. <span class="tbd">Plazo por confirmar</span></div></details>
+            <details><summary>¿Entregan fuera del AMSS?</summary><div>Por ahora solo en el Área Metropolitana de San Salvador. Escríbenos si estás en otro municipio.</div></details>
+          </>
+        )}
+      </section>
+    </div>
+
+    <section class="section" aria-labelledby="rev">
+      <h2 id="rev">Reseñas <span class="tbd">Ejemplo: solo se publicarán reseñas reales con autorización</span></h2>
+      <ul class="rev-list">
+        <li class="review"><span class="stars" aria-label="5 de 5">★★★★★</span><blockquote>“Reseña de ejemplo sobre este producto.”</blockquote><footer>[Nombre con autorización] · San Salvador</footer></li>
+        <li class="review"><span class="stars" aria-label="4 de 5">★★★★☆</span><blockquote>“Reseña de ejemplo sobre la entrega.”</blockquote><footer>[Nombre con autorización] · Santa Tecla</footer></li>
+      </ul>
+    </section>
+
+    {relacionados.length > 0 && (
+      <section class="section" aria-labelledby="rel">
+        <h2 id="rel">También te puede interesar</h2>
+        <ul class="grid-products cols-4">{relacionados.map((r) => <li><ProductCard p={r} /></li>)}</ul>
+      </section>
+    )}
+  </div>
+</Base>
+
+<script>
+  import { add, usd } from '../../scripts/cart';
+  const price = document.querySelector<HTMLElement>('[data-price]');
+  document.querySelectorAll<HTMLInputElement>('input[name="monto"]').forEach((r) =>
+    r.addEventListener('change', () => { if (price) price.textContent = usd(Number(r.dataset.precio)); }));
+
+  document.querySelector<HTMLButtonElement>('[data-add]')?.addEventListener('click', (e) => {
+    const slug = (e.currentTarget as HTMLButtonElement).dataset.add!;
+    const monto = document.querySelector<HTMLInputElement>('input[name="monto"]:checked');
+    add(slug, monto ? Number(monto.value) : undefined);
+    location.href = '/carrito/';
+  });
+
+  const mun = document.querySelector<HTMLSelectElement>('[data-municipio]');
+  const cov = document.querySelector<HTMLElement>('[data-cov]');
+  mun?.addEventListener('change', () => {
+    if (!cov) return;
+    if (!mun.value) { cov.textContent = ''; cov.className = 'small coverage-msg'; return; }
+    const ok = mun.value !== 'fuera';
+    cov.textContent = ok ? `Sí entregamos en ${mun.value}. Envío: $3.50.` : 'Por ahora solo entregamos en el AMSS. Escríbenos por WhatsApp y vemos opciones.';
+    cov.className = `small coverage-msg ${ok ? 'ok' : 'no'}`;
+  });
+</script>
+
+<style>
+  .pdp { display: grid; gap: var(--s-5); margin-bottom: var(--s-4); }
+  @media (min-width: 900px) { .pdp { grid-template-columns: 1fr 460px; gap: var(--s-7); align-items: start; } .buybox { position: sticky; top: 150px; } }
+  .main-ph { border: var(--border); background-color: var(--c-white); aspect-ratio: 16/10; }
+  @media (min-width: 900px) { .main-ph { aspect-ratio: 1; } }
+  .thumbs { list-style: none; padding: 0; margin: var(--s-3) 0 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-2); }
+  .thumbs li { border: 1.5px solid var(--c-ink); }
+  .buybox { display: grid; gap: var(--s-4); align-content: start; }
+  .buybox h1 { margin: 0; font-size: clamp(1.75rem, 5vw, 2.25rem); }
+  .buybox > p { margin: 0; }
+  .compat { padding: var(--s-3); font-size: var(--t-sm); }
+
+  .stock { display: flex; align-items: center; gap: 8px; margin: 0; font-size: var(--t-sm); }
+  .dot { width: 12px; height: 12px; border: 2px solid var(--c-ink); background: var(--c-success); }
+  .stock-pocas .dot { background: var(--c-signal); }
+  .stock-preventa .dot { background: var(--c-cobalt); }
+
+  .amounts legend { font-weight: 700; margin-bottom: var(--s-2); }
+  .amount-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(72px, 1fr)); gap: var(--s-2); }
+  .amount { position: relative; cursor: pointer; }
+  .amount input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .amount span { display: grid; place-items: center; min-height: 52px; border: var(--border); background: var(--c-white); font: 800 var(--t-lg)/1 var(--f-display); }
+  .amount input:checked + span { background: var(--c-signal); box-shadow: var(--shadow-card-sm); transform: translate(-2px, -2px); }
+  .amount input:focus-visible + span { outline: 3px solid var(--c-cobalt); outline-offset: 2px; }
+
+  .price-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+  .price-note { flex-basis: 100%; font-size: var(--t-sm); color: var(--c-muted); }
+
+  .channels { border-block: 1px solid var(--c-paper-2); padding-block: var(--s-3); }
+  .channels p { margin: 0; }
+  .channels ul { list-style: none; padding: 0; margin: 6px 0; display: flex; gap: var(--s-4); }
+  .channels li { display: inline-flex; gap: 6px; align-items: center; font-weight: 600; }
+
+  .coverage { display: grid; gap: 6px; }
+  .coverage-msg { margin: 0; min-height: 1.2em; font-weight: 600; }
+  .coverage-msg.ok { color: var(--c-success); }
+  .coverage-msg.no { color: var(--c-error); }
+
+  .add { margin-bottom: calc(var(--s-4) * -1 + 6px); }
+  .assurances { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; font-size: var(--t-sm); }
+  .assurances li { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+  .details { padding-block: var(--s-4); }
+  .specs { display: grid; grid-template-columns: max-content 1fr; gap: 0; margin: 0; border: var(--border); background: var(--c-white); font-size: var(--t-sm); }
+  .specs dt, .specs dd { padding: 10px 12px; border-bottom: 1px solid var(--c-paper-2); margin: 0; }
+  .specs dt { font-weight: 700; background: var(--c-paper); }
+  #rev { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  #rev .tbd { white-space: normal; }
+  .rev-list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 768px) { .rev-list { grid-template-columns: 1fr 1fr; } }
+</style>

@@ -1,0 +1,262 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import PaySeal from '../components/PaySeal.astro';
+import WhatsAppFab from '../components/WhatsAppFab.astro';
+import { categorias, contacto } from '../data/catalogo';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** store: tienda completa · checkout: encabezado mínimo sin distracciones · external: pasarela Wompi simulada */
+  variant?: 'store' | 'checkout' | 'external';
+  back?: { href: string; label: string };
+}
+const { back = { href: '/carrito/', label: 'Carrito' }, title, description = 'Recargas, juegos, consolas y accesorios con precio final en dólares, pago local y entrega rápida en El Salvador.', variant = 'store' } = Astro.props;
+const path = Astro.url.pathname;
+const pageTitle = variant === 'external' ? title : `${title} · Game Corner Store`;
+---
+<!doctype html>
+<html lang="es-SV" data-mode="fotos">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{pageTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="icon" href="/logo/favicon-cartucho.svg" type="image/svg+xml" />
+  <script is:inline>
+    // Por defecto se ve con fotos; solo se muestra el wireframe si el visitante lo eligió.
+    try { if (localStorage.getItem('gcs-mode') === 'wireframe') delete document.documentElement.dataset.mode; } catch (e) {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&family=IBM+Plex+Sans:wght@400;600;700&family=Silkscreen&display=swap" rel="stylesheet" />
+</head>
+<body class={`v-${variant}`}>
+  <a class="skip" href="#main">Saltar al contenido</a>
+  <div class="wf-ribbon">
+    <span class="label">Wireframe</span>
+    <span class="wf-text">Prototipo navegable sin lógica de negocio</span>
+    <a href="/mapa/">Mapa de pantallas</a>
+    <button type="button" class="mode-btn" data-mode-toggle aria-pressed="false">Ver con fotos</button>
+  </div>
+
+  {variant === 'store' && (
+    <header class="site-header">
+      <p class="promise">
+        <span><Icon name="tag" size={14} /> Precio final en USD</span>
+        <span><Icon name="card" size={14} /> Pago con tarjeta local</span>
+        <span class="hide-sm"><Icon name="clock" size={14} /> Códigos en hasta 24 h</span>
+      </p>
+      <div class="bar">
+        <div class="container bar-inner">
+          <button class="icon-btn menu-btn" popovertarget="drawer" aria-label="Abrir menú"><Icon name="menu" size={24} /></button>
+          <a class="logo" href="/" aria-label="Game Corner Store, inicio"><img class="logo-mark" src="/logo/logo-cartucho.svg" alt="" width="38" height="24" />Game<span>Corner</span><small class="label">Store</small></a>
+          <form class="search" action="/buscar/" role="search">
+            <label class="visually-hidden" for="q">Buscar</label>
+            <input id="q" name="q" type="search" placeholder="Busca PSN, Switch 2, mandos…" />
+            <button aria-label="Buscar"><Icon name="search" /></button>
+          </form>
+          <nav class="bar-actions" aria-label="Accesos">
+            <a class="icon-btn search-sm" href="/buscar/" aria-label="Buscar"><Icon name="search" size={22} /></a>
+            <a class="help-link" href="/ayuda/">Ayuda</a>
+            <a class="icon-btn cart-btn" href="/carrito/" aria-label="Carrito">
+              <Icon name="cart" size={24} /><span class="cart-count" data-cart-count hidden>0</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+      <nav class="cat-nav" aria-label="Categorías">
+        <ul class="container">
+          {categorias.map((c) => (
+            <li><a href={`/${c.slug}/`} aria-current={path.startsWith(`/${c.slug}/`) ? 'page' : undefined} class={c.slug === 'ofertas' ? 'is-offer' : undefined}>{c.nombre}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </header>
+
+    <div id="drawer" popover class="drawer">
+      <div class="drawer-head">
+        <span class="logo"><img class="logo-mark" src="/logo/logo-cartucho.svg" alt="" width="38" height="24" />Game<span>Corner</span></span>
+        <button class="icon-btn" popovertarget="drawer" popovertargetaction="hide" aria-label="Cerrar menú"><Icon name="close" size={24} /></button>
+      </div>
+      <nav aria-label="Menú">
+        <p class="label drawer-label">Categorías</p>
+        <ul>{categorias.map((c) => <li><a href={`/${c.slug}/`}>{c.nombre}<Icon name="chevron" /></a></li>)}</ul>
+        <p class="label drawer-label">Por plataforma</p>
+        <ul class="chips drawer-chips">
+          <li><a class="chip" href="/juegos-playstation/">PlayStation</a></li>
+          <li><a class="chip" href="/juegos-nintendo/">Nintendo</a></li>
+          <li><a class="chip" href="/juegos-pc/">PC</a></li>
+          <li><a class="chip" href="/codigos-saldo-digital/#movil">Celular</a></li>
+          <li><a class="chip" href="/juegos-xbox/">Xbox</a></li>
+        </ul>
+        <p class="label drawer-label">Ayuda</p>
+        <ul>
+          <li><a href="/ayuda/#como-comprar">Cómo comprar<Icon name="chevron" /></a></li>
+          <li><a href="/ayuda/#entregas">Entregas y plazos<Icon name="chevron" /></a></li>
+          <li><a href="/ayuda/#pagos">Métodos de pago<Icon name="chevron" /></a></li>
+          <li><a href="/ayuda/#reposicion">Si tu código no funciona<Icon name="chevron" /></a></li>
+        </ul>
+      </nav>
+      <p class="drawer-foot small">WhatsApp {contacto.whatsapp} · {contacto.horario} <span class="tbd">por confirmar</span></p>
+    </div>
+  )}
+
+  {variant === 'checkout' && (
+    <header class="site-header checkout-header">
+      <div class="container bar-inner">
+        <a class="back" href={back.href}><Icon name="back" /> <span>{back.label}</span></a>
+        <a class="logo" href="/" aria-label="Game Corner Store, inicio"><img class="logo-mark" src="/logo/logo-cartucho.svg" alt="" width="38" height="24" />Game<span>Corner</span></a>
+        <span class="secure"><Icon name="lock" size={16} /> <span>Pago seguro</span></span>
+      </div>
+    </header>
+  )}
+
+  <main id="main">
+    <slot />
+  </main>
+
+  {variant === 'store' && (
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <span class="logo"><img class="logo-mark" src="/logo/logo-cartucho-dark.svg" alt="" width="38" height="24" />Game<span>Corner</span><small class="label">Store</small></span>
+            <p>Tienda salvadoreña de videojuegos. Recargas, códigos, consolas y accesorios con precio final en dólares.</p>
+            <PaySeal label="Pagos procesados por Wompi" />
+          </div>
+          <nav aria-label="Comprar">
+            <h2 class="label">Comprar</h2>
+            <ul>{categorias.map((c) => <li><a href={`/${c.slug}/`}>{c.nombre}</a></li>)}</ul>
+          </nav>
+          <nav aria-label="Ayuda">
+            <h2 class="label">Ayuda</h2>
+            <ul>
+              <li><a href="/ayuda/#como-comprar">Cómo comprar</a></li>
+              <li><a href="/ayuda/#entregas">Entregas y plazos</a></li>
+              <li><a href="/ayuda/#pagos">Métodos de pago</a></li>
+              <li><a href="/ayuda/#reposicion">Reposición de códigos</a></li>
+              <li><a href="/ayuda/#privacidad">Política de privacidad</a></li>
+            </ul>
+          </nav>
+          <div>
+            <h2 class="label">Atención</h2>
+            <p><b>WhatsApp {contacto.whatsapp}</b><br />{contacto.horario}<br />{contacto.correo}</p>
+            <span class="tbd">Número y horario por confirmar</span>
+          </div>
+        </div>
+        <p class="footer-legal">© 2026 Game Corner Store · San Salvador, El Salvador · gamecornerstore.com</p>
+      </div>
+    </footer>
+  )}
+
+  {variant !== 'external' && <WhatsAppFab />}
+
+  <script>
+    // Interruptor wireframe / con fotos (preferencia por visitante, se guarda en este navegador)
+    const btn = document.querySelector<HTMLButtonElement>('[data-mode-toggle]');
+    const syncBtn = () => {
+      const on = document.documentElement.dataset.mode === 'fotos';
+      if (btn) { btn.textContent = on ? 'Ver wireframe' : 'Ver con fotos'; btn.setAttribute('aria-pressed', String(on)); }
+    };
+    syncBtn();
+    btn?.addEventListener('click', () => {
+      const on = document.documentElement.dataset.mode !== 'fotos';
+      if (on) document.documentElement.dataset.mode = 'fotos'; else delete document.documentElement.dataset.mode;
+      try { localStorage.setItem('gcs-mode', on ? 'fotos' : 'wireframe'); } catch {}
+      syncBtn();
+    });
+
+    import { getItems, lines, totals } from '../scripts/cart';
+    function paint() {
+      const el = document.querySelector<HTMLElement>('[data-cart-count]');
+      if (!el) return;
+      const { items, demo } = getItems();
+      const n = demo ? 0 : totals(lines(items)).count;
+      el.textContent = String(n);
+      el.hidden = n === 0;
+    }
+    paint();
+    document.addEventListener('cart:change', paint);
+  </script>
+</body>
+</html>
+
+<style>
+  .skip { position: absolute; left: -9999px; }
+  .skip:focus { left: 16px; top: 16px; z-index: 100; background: var(--c-signal); padding: 8px 12px; border: var(--border); }
+
+  .wf-ribbon { display: flex; align-items: center; gap: 10px; justify-content: center; padding: 6px 16px; background: var(--c-paper-2); border-bottom: 1px dashed var(--c-muted); font-size: var(--t-xs); color: var(--c-muted); flex-wrap: wrap; }
+  .wf-ribbon a { color: var(--c-ink); font-weight: 600; }
+  .mode-btn { border: 1.5px solid var(--c-ink); background: var(--c-white); color: var(--c-ink); font: 700 var(--t-xs)/1 var(--f-body); padding: 5px 10px; cursor: pointer; }
+  .mode-btn[aria-pressed="true"] { background: var(--c-ink); color: var(--c-signal); }
+  @media (max-width: 480px) { .wf-text { display: none; } }
+
+  .site-header { position: sticky; top: 0; z-index: 30; background: var(--c-signal); border-bottom: var(--border); }
+  .promise { display: flex; justify-content: center; gap: 20px; margin: 0; padding: 6px 16px; background: var(--c-ink); color: var(--c-signal); font-size: var(--t-xs); font-weight: 600; }
+  .promise span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+  @media (max-width: 480px) { .hide-sm { display: none !important; } .promise { gap: 12px; } }
+
+  .bar-inner { display: flex; align-items: center; gap: 12px; min-height: var(--header-h); }
+  .logo { font: 800 1.35rem/1 var(--f-display); letter-spacing: -0.03em; color: var(--c-ink); text-decoration: none; display: inline-flex; align-items: baseline; gap: 2px; white-space: nowrap; }
+  .logo span { color: var(--c-cobalt); }
+  .logo { align-items: center; }
+  .logo-mark { width: 38px; height: 24px; margin-right: 6px; flex: none; }
+  @media (max-width: 380px) { .logo-mark { width: 32px; height: 20px; margin-right: 4px; } }
+  @media (max-width: 480px) { .bar .logo small { display: none; } }
+  .logo small { margin-left: 6px; font-size: 0.6rem; }
+  .icon-btn { display: inline-grid; place-items: center; width: 44px; height: 44px; background: none; border: 0; color: var(--c-ink); cursor: pointer; position: relative; }
+  .cart-count { position: absolute; top: 2px; right: 0; min-width: 20px; height: 20px; padding: 0 5px; display: grid; place-items: center; background: var(--c-ink); color: var(--c-signal); font: 700 0.6875rem/1 var(--f-body); }
+  .bar-actions { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+  .help-link { display: none; color: var(--c-ink); font-weight: 600; padding: 0 12px; }
+  .search { display: none; flex: 1; max-width: 520px; margin-left: 16px; border: var(--border); background: var(--c-white); }
+  .search input { flex: 1; min-width: 0; border: 0; padding: 0 12px; height: 42px; font: inherit; background: none; }
+  .search input:focus { outline: none; }
+  .search:focus-within { outline: 3px solid var(--c-cobalt); outline-offset: 2px; }
+  .search button { width: 46px; border: 0; border-left: var(--border); background: var(--c-ink); color: var(--c-signal); cursor: pointer; display: grid; place-items: center; }
+
+  .cat-nav { display: none; background: var(--c-white); border-top: var(--border); }
+  .cat-nav ul { display: flex; gap: 4px; list-style: none; margin: 0 auto; }
+  .cat-nav a { display: block; padding: 12px 14px; color: var(--c-ink); text-decoration: none; font-weight: 600; font-size: var(--t-sm); border-bottom: 3px solid transparent; }
+  .cat-nav a:hover { background: var(--c-signal-soft); }
+  .cat-nav a[aria-current] { border-bottom-color: var(--c-ink); }
+  .cat-nav a.is-offer { color: var(--c-error); }
+
+  @media (min-width: 900px) {
+    .menu-btn, .search-sm { display: none; }
+    .search { display: flex; }
+    .help-link { display: inline-block; }
+    .cat-nav { display: block; }
+  }
+
+  .drawer { margin: 0; inset: 0 auto 0 0; width: min(340px, 88vw); height: 100dvh; max-height: none; padding: 0; border: 0; border-right: var(--border); background: var(--c-white); overflow-y: auto; }
+  .drawer::backdrop { background: rgba(14,14,16,.5); }
+  .drawer-head { display: flex; justify-content: space-between; align-items: center; padding: 8px 8px 8px 16px; background: var(--c-signal); border-bottom: var(--border); }
+  .drawer nav { padding: 8px 16px 16px; }
+  .drawer-label { margin: 20px 0 6px; color: var(--c-muted); }
+  .drawer ul:not(.chips) { list-style: none; padding: 0; margin: 0; }
+  .drawer ul:not(.chips) a { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--c-paper-2); color: var(--c-ink); text-decoration: none; font-weight: 600; }
+  .drawer-foot { padding: 16px; margin: 0; background: var(--c-paper); color: var(--c-muted); }
+
+  .checkout-header { background: var(--c-white); }
+  .checkout-header .bar-inner { justify-content: space-between; }
+  .back, .secure { display: inline-flex; align-items: center; gap: 4px; color: var(--c-ink); font-weight: 600; font-size: var(--t-sm); min-width: 90px; }
+  .back { text-decoration: none; }
+  .secure { justify-content: flex-end; color: var(--c-success); }
+  @media (max-width: 400px) { .back span, .secure span { display: none; } .back, .secure { min-width: 44px; } }
+
+  .site-footer { margin-top: var(--s-8); background: var(--c-ink); color: #D7D7DC; padding: var(--s-7) 0 calc(var(--s-7) + 60px); font-size: var(--t-sm); }
+  .site-footer .logo { color: #fff; }
+  .site-footer .logo span { color: var(--c-signal); }
+  .site-footer .logo small { color: var(--c-signal); }
+  .footer-top { display: grid; gap: var(--s-6); }
+  @media (min-width: 768px) { .footer-top { grid-template-columns: 1.4fr 1fr 1fr 1fr; } }
+  .footer-brand p { margin: 12px 0 16px; max-width: 40ch; }
+  .site-footer h2 { color: var(--c-signal); margin: 0 0 12px; letter-spacing: .08em; }
+  .site-footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .site-footer a { color: #fff; text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; }
+  .site-footer :global(.payseal) { color: #B9B9C0; }
+  .footer-legal { margin: var(--s-6) 0 0; padding-top: var(--s-4); border-top: 1px solid #333; font-size: var(--t-xs); color: #9A9AA2; }
+</style>

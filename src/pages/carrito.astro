@@ -1,0 +1,122 @@
+---
+import Base from '../layouts/Base.astro';
+import DeliveryBadge from '../components/DeliveryBadge.astro';
+import PaySeal from '../components/PaySeal.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Carrito">
+  <div class="container">
+    <h1 class="page-title">Tu carrito</h1>
+    <p class="demo-note small" data-demo hidden><span class="tbd">Carrito de ejemplo</span> Mostramos la tarjeta PSN de $20 (tarea del testeo). Agrega otro producto desde la tienda para cambiarlo.</p>
+
+    <div class="two-col" data-full>
+      <section aria-label="Productos en el carrito">
+        <ul class="cart-list" data-list></ul>
+        <a class="keep" href="/"><Icon name="back" size={16} /> Seguir comprando</a>
+      </section>
+
+      <aside class="sticky">
+        <div class="panel panel-shadow summary">
+          <h2>Resumen</h2>
+          <dl>
+            <dt>Subtotal</dt><dd data-subtotal>$0.00</dd>
+            <dt data-envio-label>Envío</dt><dd data-envio>$0.00</dd>
+            <dt>Comisiones y cargos</dt><dd class="zero">$0.00</dd>
+            <dt class="total">Total a pagar</dt><dd class="total" data-total>$0.00</dd>
+          </dl>
+          <p class="small muted no-hidden">Precio final en dólares. No hay cargos ocultos ni conversión de moneda.</p>
+          <a class="btn btn-primary btn-block" href="/checkout/">Continuar al pago</a>
+          <div class="badges" data-badges>
+            <div data-badge-digital hidden><DeliveryBadge tipo="digital" compact /></div>
+            <div data-badge-fisico hidden><DeliveryBadge tipo="fisico" compact /></div>
+          </div>
+          <PaySeal />
+        </div>
+      </aside>
+    </div>
+
+    <div class="empty panel" data-empty hidden>
+      <Icon name="cart" size={40} />
+      <h2>Tu carrito está vacío</h2>
+      <p class="muted">Empieza por una recarga o explora consolas y juegos.</p>
+      <div class="empty-ctas">
+        <a class="btn btn-primary" href="/codigos-saldo-digital/">Ver códigos y saldo</a>
+        <a class="btn btn-secondary" href="/consolas/">Ver consolas</a>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import { getItems, lines, totals, setQty, usd } from '../scripts/cart';
+  import { getImagen } from '../data/imagenes';
+  const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!;
+
+  function render() {
+    const { items, demo } = getItems();
+    const ls = lines(items);
+    const t = totals(ls);
+    $('[data-demo]').hidden = !demo;
+    $('[data-full]').hidden = ls.length === 0;
+    $('[data-empty]').hidden = ls.length > 0;
+
+    $('[data-list]').innerHTML = ls.map((l, i) => `
+      <li class="cart-item">
+        <div class="ph ph-square"><span class="ph-label">Foto</span>${getImagen(l.p.slug) ? `<img class="media-img fit-contain" src="${getImagen(l.p.slug)!.file}" alt="">` : ''}</div>
+        <div class="ci-info">
+          <span class="label label-cobalt">${l.p.linea === 'digital' ? 'Código digital' : 'Producto físico'}</span>
+          <a class="ci-name" href="/producto/${l.p.slug}/">${l.p.nombre}</a>
+          <span class="small muted">${l.etiqueta} · ${usd(l.precio)} c/u</span>
+          <span class="small ci-delivery">${l.p.linea === 'digital' ? 'Entrega por WhatsApp o correo en hasta 24 h' : 'Entrega a domicilio en el AMSS'}</span>
+          <div class="ci-actions">
+            <div class="qty" role="group" aria-label="Cantidad">
+              <button type="button" data-i="${i}" data-d="-1" aria-label="Quitar uno">−</button>
+              <span>${l.item.qty}</span>
+              <button type="button" data-i="${i}" data-d="1" aria-label="Agregar uno">+</button>
+            </div>
+            <button type="button" class="btn-link small" data-remove="${i}">Eliminar</button>
+          </div>
+        </div>
+        <span class="price ci-price">${usd(l.subtotal)}</span>
+      </li>`).join('');
+
+    $('[data-subtotal]').textContent = usd(t.subtotal);
+    $('[data-envio-label]').textContent = t.tieneFisico ? 'Envío a domicilio (AMSS)' : 'Envío (código digital)';
+    const env = $('[data-envio]');
+    env.textContent = usd(t.envio);
+    env.classList.toggle('zero', t.envio === 0);
+    $('[data-total]').textContent = usd(t.total);
+    $('[data-badge-digital]').hidden = !t.tieneDigital;
+    $('[data-badge-fisico]').hidden = !t.tieneFisico;
+
+    document.querySelectorAll<HTMLButtonElement>('[data-d]').forEach((b) => b.onclick = () => {
+      const i = Number(b.dataset.i); setQty(i, ls[i].item.qty + Number(b.dataset.d)); render();
+    });
+    document.querySelectorAll<HTMLButtonElement>('[data-remove]').forEach((b) => b.onclick = () => { setQty(Number(b.dataset.remove), 0); render(); });
+  }
+  render();
+</script>
+
+<style>
+  .page-title { margin: var(--s-5) 0 var(--s-3); }
+  .demo-note { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; color: var(--c-muted); }
+  .cart-list { list-style: none; padding: 0; margin: 0 0 var(--s-4); display: grid; gap: var(--s-3); }
+  :global(.cart-item) { display: grid; grid-template-columns: 72px 1fr; gap: var(--s-3); padding: var(--s-3); background: var(--c-white); border: var(--border); }
+  :global(.cart-item .ph) { border: 1.5px solid var(--c-ink); }
+  :global(.ci-info) { display: grid; gap: 4px; }
+  :global(.ci-name) { font-weight: 700; color: var(--c-ink); text-decoration: none; }
+  :global(.ci-delivery) { color: var(--c-success); font-weight: 600; }
+  :global(.ci-actions) { display: flex; align-items: center; gap: var(--s-4); margin-top: 6px; }
+  :global(.ci-price) { grid-column: 2; }
+  @media (min-width: 600px) { :global(.cart-item) { grid-template-columns: 96px 1fr auto; } :global(.ci-price) { grid-column: 3; grid-row: 1; } }
+  :global(.qty) { display: inline-flex; border: var(--border); }
+  :global(.qty button) { width: 40px; height: 40px; border: 0; background: var(--c-white); font: 700 var(--t-lg)/1 var(--f-body); cursor: pointer; }
+  :global(.qty button:hover) { background: var(--c-signal-soft); }
+  :global(.qty span) { display: grid; place-items: center; min-width: 36px; border-inline: var(--border); font-weight: 700; }
+  .keep { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+  .summary h2 { font-size: var(--t-lg); }
+  .summary .btn { margin: var(--s-4) 0 var(--s-2); }
+  .badges { display: grid; gap: var(--s-2); margin-bottom: var(--s-4); }
+  .empty { text-align: center; display: grid; justify-items: center; gap: var(--s-2); padding: var(--s-7) var(--s-4); }
+  .empty-ctas { display: flex; flex-wrap: wrap; gap: var(--s-3); justify-content: center; margin-top: var(--s-3); }
+</style>

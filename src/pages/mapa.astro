@@ -1,0 +1,104 @@
+---
+import Base from '../layouts/Base.astro';
+import { listados } from '../data/catalogo';
+import { imagenes } from '../data/imagenes';
+const creditos = Object.entries(imagenes);
+
+const pantallas = [
+  { n: 1, nombre: 'Inicio', href: '/', nota: 'Recarga rápida, 5 categorías, plataformas, cómo funciona, confianza.' },
+  { n: 2, nombre: 'Códigos y saldo digital', href: '/codigos-saldo-digital/', nota: 'Agrupado por plataforma, con distintivo de 24 h.' },
+  { n: 3, nombre: 'Listado por plataforma (plantilla)', href: '/juegos-playstation-5/', nota: 'URLs del keyword research con filtros.' },
+  { n: 4, nombre: 'Consolas y accesorios', href: '/consolas/', nota: 'Línea física, condición nuevo/seminuevo.' },
+  { n: 5, nombre: 'Ofertas y liquidación', href: '/ofertas/', nota: 'Precio anterior tachado, precio final visible.' },
+  { n: 6, nombre: 'Ficha de producto digital', href: '/producto/tarjeta-psn/', nota: 'Monto, región, canales de recepción, distintivo bajo el botón.' },
+  { n: 7, nombre: 'Ficha de producto físico', href: '/producto/playstation-5-slim/', nota: 'Disponibilidad, cobertura por municipio, envío AMSS.' },
+  { n: 8, nombre: 'Búsqueda', href: '/buscar/?q=psn', nota: 'Resultados y estado sin resultados.' },
+  { n: 9, nombre: 'Carrito transparente', href: '/carrito/', nota: 'Desglose con comisiones $0.00 y envío visible.' },
+  { n: 10, nombre: 'Checkout rápido', href: '/checkout/', nota: 'Datos, canal de entrega o dirección, método de pago.' },
+  { n: 11, nombre: 'Pasarela Wompi (simulada)', href: '/pago/wompi/', nota: 'Salida a la página de Wompi; aprobar o rechazar.' },
+  { n: 12, nombre: 'Pago aprobado', href: '/pedido/confirmado/?tipo=digital', nota: 'Variantes digital y física.' },
+  { n: 13, nombre: 'Pago rechazado', href: '/pedido/rechazado/', nota: 'Explicación y otro método de pago.' },
+  { n: 14, nombre: 'Ayuda', href: '/ayuda/', nota: 'Cómo comprar, entregas, pagos, reposición, contacto.' },
+  { n: 15, nombre: 'Lineamientos visuales', href: '/lineamientos/', nota: 'Sistema "Cartucho": color, tipografía, componentes.' },
+];
+const flujos = [
+  { t: 'Tarea 1 del testeo: tarjeta PSN de $20 hasta Wompi', pasos: [['Inicio', '/'], ['Códigos y saldo', '/codigos-saldo-digital/'], ['Tarjeta PSN', '/producto/tarjeta-psn/'], ['Carrito', '/carrito/'], ['Checkout', '/checkout/'], ['Wompi', '/pago/wompi/'], ['Aprobado', '/pedido/confirmado/?tipo=digital']] },
+  { t: 'Línea física: consola con entrega a domicilio', pasos: [['Inicio', '/'], ['Consolas', '/consolas/'], ['PS5 Slim', '/producto/playstation-5-slim/'], ['Carrito', '/carrito/'], ['Checkout', '/checkout/'], ['Wompi', '/pago/wompi/'], ['Aprobado', '/pedido/confirmado/?tipo=fisico']] },
+  { t: 'Pago rechazado', pasos: [['Checkout', '/checkout/'], ['Wompi', '/pago/wompi/'], ['Rechazado', '/pedido/rechazado/'], ['Otro método', '/checkout/#pago']] },
+  { t: 'Tarea 3 del testeo: soporte por WhatsApp', pasos: [['Cualquier pantalla', '/'], ['Botón flotante WhatsApp', '/'], ['“¿Aceptan transferencias?”', '/']] },
+];
+---
+<Base title="Mapa de pantallas">
+  <div class="container map">
+    <header>
+      <p class="label label-cobalt">Wireframes navegables</p>
+      <h1>Mapa de pantallas</h1>
+      <p class="muted">Todas las pantallas del prototipo de Game Corner Store y los recorridos que se probaron en el testeo de usabilidad. Los datos marcados con <span class="tbd">por confirmar</span> son supuestos del wireframe.</p>
+    </header>
+
+    <section class="section">
+      <h2>Recorridos</h2>
+      <ol class="flows">
+        {flujos.map((f) => (
+          <li class="panel">
+            <h3>{f.t}</h3>
+            <ol class="path">{f.pasos.map(([n, h]) => <li><a href={h}>{n}</a></li>)}</ol>
+          </li>
+        ))}
+      </ol>
+      <p class="small muted">Regla de los tres clics: Inicio → Códigos y saldo → Tarjeta PSN son 2 clics; desde “Recarga rápida” en Inicio es 1 clic.</p>
+    </section>
+
+    <section class="section">
+      <h2>Pantallas</h2>
+      <ol class="screens">
+        {pantallas.map((p) => (
+          <li><a href={p.href} class="screen">
+            <span class="num">{String(p.n).padStart(2, '0')}</span>
+            <span><b>{p.nombre}</b><small>{p.nota}</small><code>{p.href}</code></span>
+          </a></li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="section">
+      <h2>URLs de listados (keyword research)</h2>
+      <ul class="chips">{listados.map((l) => <li><a class="chip" href={`/${l.path}/`}>/{l.path}/</a></li>)}</ul>
+    </section>
+
+    {creditos.length > 0 && (
+      <section class="section" id="creditos">
+        <h2>Créditos de imágenes</h2>
+        <p class="small muted">Se ven con el botón “Ver con fotos” de la franja superior. Las marcas y logotipos pertenecen a sus dueños y se usan solo con fines ilustrativos en este trabajo académico.</p>
+        <table class="credits">
+          <thead><tr><th>Imagen</th><th>Autor</th><th>Licencia</th><th>Fuente</th></tr></thead>
+          <tbody>{creditos.map(([slug, im]) => (
+            <tr><td>{im.alt}<br /><code>{slug}</code></td><td>{im.autor ?? '—'}</td><td>{im.licencia}</td><td><a href={im.fuente} rel="noopener" target="_blank">{(() => { try { return new URL(im.fuente).hostname; } catch { return im.fuente; } })()}</a></td></tr>
+          ))}</tbody>
+        </table>
+      </section>
+    )}
+  </div>
+</Base>
+
+<style>
+  .map header { padding-top: var(--s-5); max-width: 70ch; }
+  .flows { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 900px) { .flows { grid-template-columns: 1fr 1fr; } }
+  .flows h3 { font-size: var(--t-md); }
+  .path { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; font-size: var(--t-sm); }
+  .path li { display: flex; align-items: center; gap: 6px; }
+  .path li + li::before { content: '→'; color: var(--c-muted); }
+  .path a { font-weight: 600; }
+  .screens { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-3); }
+  @media (min-width: 768px) { .screens { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .screens { grid-template-columns: repeat(3, 1fr); } }
+  .screen { display: flex; gap: var(--s-3); height: 100%; padding: var(--s-4); background: var(--c-white); border: var(--border); color: var(--c-ink); text-decoration: none; box-shadow: var(--shadow-card-sm); }
+  .screen:hover { background: var(--c-signal-soft); }
+  .num { font: 800 var(--t-xl)/1 var(--f-display); color: var(--c-cobalt); }
+  .screen small { display: block; color: var(--c-muted); font-size: var(--t-sm); margin: 4px 0; }
+  .screen code { font-size: var(--t-xs); color: var(--c-muted); }
+  .credits { width: 100%; border-collapse: collapse; background: var(--c-white); border: var(--border); font-size: var(--t-xs); display: block; overflow-x: auto; }
+  .credits th, .credits td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--c-paper-2); vertical-align: top; }
+  .credits th { background: var(--c-ink); color: var(--c-signal); }
+</style>

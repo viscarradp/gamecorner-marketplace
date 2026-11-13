@@ -1,0 +1,12 @@
+---
+// Marcador de wireframe + foto real. El modo se elige con el interruptor de la franja superior
+// (html[data-mode="fotos"]). Sin imagen en el manifiesto, siempre se ve el marcador.
+import { getImagen } from '../data/imagenes';
+interface Props { slug: string; label: string; class?: string; fit?: 'contain' | 'cover' }
+const { slug, label, class: cls = '', fit = 'contain' } = Astro.props;
+const im = getImagen(slug);
+---
+<div class={`ph ${cls}`} data-has-img={im ? '' : undefined}>
+  <span class="ph-label">{label}</span>
+  {im && <img class={`media-img fit-${fit}${im.fondo === 'oscuro' ? ' bg-dark' : ''}`} src={im.file} alt={im.alt} loading="lazy" decoding="async" />}
+</div>

@@ -1,0 +1,145 @@
+---
+import Base from '../layouts/Base.astro';
+import DeliveryBadge from '../components/DeliveryBadge.astro';
+import Icon from '../components/Icon.astro';
+import { municipiosAMSS } from '../data/catalogo';
+import { getImagen } from '../data/imagenes';
+const wompi = getImagen('logo-wompi');
+const ba = getImagen('logo-banco-agricola');
+---
+<Base title="Pago" variant="checkout">
+  <div class="container calm">
+    <ol class="stepper" aria-label="Progreso">
+      <li class="done">Carrito</li>
+      <li class="current" aria-current="step">Datos y entrega</li>
+      <li>Pago en Wompi</li>
+    </ol>
+
+    <form class="two-col" action="/pago/wompi/" method="get" data-checkout>
+      <div class="stack">
+        <h1>Datos para tu pedido</h1>
+
+        <section class="panel" aria-labelledby="s-datos">
+          <h2 id="s-datos" class="step-h"><span>1</span> Tus datos</h2>
+          <div class="fields">
+            <div class="field"><label for="nombre">Nombre completo</label><input class="input" id="nombre" name="nombre" autocomplete="name" placeholder="Ej. María Pérez" /></div>
+            <div class="field"><label for="wa">WhatsApp</label>
+              <div class="prefix"><span>+503</span><input class="input" id="wa" name="wa" inputmode="tel" autocomplete="tel-national" placeholder="7000 0000" /></div>
+              <span class="hint">Por aquí te avisamos del estado de tu pedido.</span>
+            </div>
+            <div class="field"><label for="email">Correo electrónico</label><input class="input" id="email" name="email" type="email" autocomplete="email" placeholder="tucorreo@ejemplo.com" /><span class="hint">Te enviamos el comprobante de compra.</span></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="s-entrega" data-sec-digital>
+          <h2 id="s-entrega" class="step-h"><span>2</span> ¿Dónde recibes tu código?</h2>
+          <fieldset class="opts">
+            <legend class="visually-hidden">Canal de entrega del código</legend>
+            <label class="option"><input type="radio" name="canal" value="whatsapp" checked /><span><b>WhatsApp</b><span class="muted">Al número que escribiste arriba.</span></span></label>
+            <label class="option"><input type="radio" name="canal" value="correo" /><span><b>Correo electrónico</b><span class="muted">Al correo que escribiste arriba.</span></span></label>
+            <label class="option"><input type="radio" name="canal" value="ambos" /><span><b>Los dos</b><span class="muted">Recomendado si cambias seguido de celular.</span></span></label>
+          </fieldset>
+          <DeliveryBadge tipo="digital" />
+        </section>
+
+        <section class="panel" aria-labelledby="s-dir" data-sec-fisico hidden>
+          <h2 id="s-dir" class="step-h"><span data-n-dir>2</span> Dirección de entrega</h2>
+          <div class="fields">
+            <div class="field"><label for="municipio">Municipio</label>
+              <select class="select" id="municipio" name="municipio">{municipiosAMSS.map((m) => <option>{m}</option>)}</select>
+              <span class="hint">Entregamos solo en el Área Metropolitana de San Salvador.</span>
+            </div>
+            <div class="field"><label for="dir">Dirección</label><input class="input" id="dir" name="dir" autocomplete="street-address" placeholder="Colonia, calle, número de casa o apartamento" /></div>
+            <div class="field"><label for="ref">Punto de referencia <span class="muted">(opcional)</span></label><input class="input" id="ref" name="ref" placeholder="Ej. frente al parque" /></div>
+          </div>
+          <DeliveryBadge tipo="fisico" />
+        </section>
+
+        <section class="panel" aria-labelledby="s-pago" id="pago">
+          <h2 id="s-pago" class="step-h"><span data-n-pago>3</span> Forma de pago</h2>
+          <fieldset class="opts">
+            <legend class="visually-hidden">Forma de pago</legend>
+            <label class="option"><input type="radio" name="metodo" value="tarjeta" checked />
+              <span><b>Tarjeta de débito o crédito</b><span class="muted">Visa o Mastercard de bancos salvadoreños. Procesado por Wompi.</span>
+                <span class="logos"><span class={`payseal-logo${wompi ? ' has-logo' : ''}`}><span class="logo-text">Wompi <i>logo</i></span>{wompi && <img class="logo-img" src={wompi.file} alt={wompi.alt} />}</span><span class={`payseal-logo${ba ? ' has-logo' : ''}`}><span class="logo-text">Banco Agrícola <i>logo</i></span>{ba && <img class="logo-img" src={ba.file} alt={ba.alt} />}</span><span class="payseal-logo">Visa</span><span class="payseal-logo">Mastercard</span></span>
+              </span>
+            </label>
+            <label class="option"><input type="radio" name="metodo" value="puntos" />
+              <span><b>Puntos Banco Agrícola</b><span class="muted">Disponible a través de Wompi.</span> <span class="tbd">Método por confirmar</span></span>
+            </label>
+          </fieldset>
+          <p class="small muted transfer"><Icon name="info" size={16} /> <span>¿Prefieres pagar por transferencia? <button type="button" class="btn-link" popovertarget="wa-chat">Pregúntanos por WhatsApp</button></span></p>
+        </section>
+
+        <label class="consent small"><input type="checkbox" name="terminos" checked /> <span>Acepto los <a href="/ayuda/#privacidad">términos y la política de privacidad</a>.</span></label>
+        <label class="consent small"><input type="checkbox" name="novedades" /> <span>Quiero recibir novedades y ofertas por correo (opcional).</span></label>
+      </div>
+
+      <aside class="sticky">
+        <div class="panel summary">
+          <h2>Tu pedido</h2>
+          <ul class="mini" data-mini></ul>
+          <dl>
+            <dt>Subtotal</dt><dd data-subtotal></dd>
+            <dt data-envio-label>Envío</dt><dd data-envio></dd>
+            <dt>Comisiones y cargos</dt><dd class="zero">$0.00</dd>
+            <dt class="total">Total</dt><dd class="total" data-total></dd>
+          </dl>
+          <button class="btn btn-primary btn-block" type="submit"><Icon name="lock" size={18} /> <span data-pay>Pagar con Wompi</span></button>
+          <p class="small muted redirect">Te llevaremos a la página segura de Wompi para ingresar tu tarjeta. Nosotros no vemos ni guardamos los datos de tu tarjeta. Al terminar regresas aquí.</p>
+        </div>
+      </aside>
+    </form>
+  </div>
+</Base>
+
+<script>
+  import { getOrderItems, lines, totals, usd } from '../scripts/cart';
+  const items = getOrderItems();
+  const ls = lines(items);
+  const t = totals(ls);
+  const q = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!;
+
+  q('[data-mini]').innerHTML = ls.map((l) => `<li><span>${l.item.qty} × ${l.p.nombre}<small>${l.etiqueta}</small></span><b>${usd(l.subtotal)}</b></li>`).join('');
+  q('[data-subtotal]').textContent = usd(t.subtotal);
+  q('[data-envio-label]').textContent = t.tieneFisico ? 'Envío a domicilio (AMSS)' : 'Envío (código digital)';
+  const env = q('[data-envio]'); env.textContent = usd(t.envio); env.classList.toggle('zero', t.envio === 0);
+  q('[data-total]').textContent = usd(t.total);
+  q('[data-pay]').textContent = `Pagar ${usd(t.total)} con Wompi`;
+
+  // Secciones según el tipo de pedido (flujo UX p. 8: digital pide canal; físico pide dirección)
+  q('[data-sec-digital]').hidden = !t.tieneDigital;
+  q('[data-sec-fisico]').hidden = !t.tieneFisico;
+  q('[data-n-dir]').textContent = t.tieneDigital ? '3' : '2';
+  q('[data-n-pago]').textContent = String(2 + Number(t.tieneDigital) + Number(t.tieneFisico));
+
+  q<HTMLFormElement>('[data-checkout]').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const canal = (document.querySelector<HTMLInputElement>('input[name="canal"]:checked')?.value) ?? 'whatsapp';
+    try { sessionStorage.setItem('gcs-canal', canal); } catch {}
+    location.href = '/pago/wompi/';
+  });
+</script>
+
+<style>
+  .calm { max-width: 1080px; }
+  .calm h1 { font-size: var(--t-xl); }
+  .step-h { display: flex; align-items: center; gap: 10px; font-size: var(--t-lg); }
+  .step-h span { display: grid; place-items: center; width: 28px; height: 28px; background: var(--c-ink); color: var(--c-signal); font-size: var(--t-sm); }
+  .fields { display: grid; gap: var(--s-4); }
+  @media (min-width: 700px) { .fields { grid-template-columns: 1fr 1fr; } .fields .field:first-child { grid-column: 1 / -1; } }
+  .prefix { display: flex; }
+  .prefix span { display: grid; place-items: center; padding: 0 12px; border: 1.5px solid var(--c-ink); border-right: 0; background: var(--c-paper); font-weight: 600; }
+  .opts { display: grid; gap: var(--s-2); margin-bottom: var(--s-4); }
+  .opts .option > span { display: grid; gap: 2px; }
+  .logos { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .transfer { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 0; }
+  .consent { display: flex; gap: 10px; align-items: flex-start; }
+  .consent input { width: 18px; height: 18px; accent-color: var(--c-ink); margin-top: 2px; }
+  .summary h2 { font-size: var(--t-lg); }
+  :global(.mini) { list-style: none; padding: 0; margin: 0 0 var(--s-4); display: grid; gap: var(--s-2); font-size: var(--t-sm); border-bottom: 1px solid var(--c-paper-2); padding-bottom: var(--s-3); }
+  :global(.mini li) { display: flex; justify-content: space-between; gap: var(--s-3); }
+  :global(.mini small) { display: block; color: var(--c-muted); }
+  .summary .btn { margin-top: var(--s-2); }
+  .redirect { margin: var(--s-3) 0 0; }
+</style>

@@ -1,0 +1,22 @@
+---
+// Distintivo de entrega. Hallazgo del testeo (Investigación UX p. 9): va DEBAJO del botón de compra.
+// Regla de comunicación: nunca "entrega inmediata"; el plazo comercial es "hasta 24 h".
+import Icon from './Icon.astro';
+interface Props { tipo?: 'digital' | 'fisico'; compact?: boolean }
+const { tipo = 'digital', compact = false } = Astro.props;
+---
+{tipo === 'digital' ? (
+  <p class="delivery-badge" data-delivery-badge>
+    <Icon name="clock" />
+    <span>Recibes tu código en <b>hasta 24 h</b> por WhatsApp o correo
+      {!compact && <small>Lo enviamos después de confirmar tu pago. Normalmente tarda menos.</small>}
+    </span>
+  </p>
+) : (
+  <p class="delivery-badge is-physical" data-delivery-badge>
+    <Icon name="truck" />
+    <span>Entrega a domicilio en el <b>Área Metropolitana de San Salvador</b>
+      {!compact && <small>Coordinamos día y hora por WhatsApp. <span class="tbd">Plazo y tarifa por confirmar</span></small>}
+    </span>
+  </p>
+)}

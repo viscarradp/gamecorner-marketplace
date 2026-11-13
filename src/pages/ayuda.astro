@@ -1,0 +1,109 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import DeliveryBadge from '../components/DeliveryBadge.astro';
+import PaySeal from '../components/PaySeal.astro';
+import Icon from '../components/Icon.astro';
+import { contacto, ENVIO_AMSS, usd } from '../data/catalogo';
+const temas = [
+  { id: 'como-comprar', t: 'Cómo comprar' },
+  { id: 'entregas', t: 'Entregas y plazos' },
+  { id: 'pagos', t: 'Métodos de pago' },
+  { id: 'reposicion', t: 'Si tu código no funciona' },
+  { id: 'contacto', t: 'Contacto' },
+  { id: 'privacidad', t: 'Privacidad' },
+];
+---
+<Base title="Ayuda" description="Cómo comprar, plazos de entrega, métodos de pago y reposición de códigos en Game Corner Store.">
+  <div class="container">
+    <Breadcrumbs items={[{ nombre: 'Inicio', href: '/' }, { nombre: 'Ayuda' }]} />
+    <header class="help-head">
+      <h1>¿En qué te ayudamos?</h1>
+      <p class="muted">Respuestas claras antes de que pagues. Si te queda una duda, escríbenos por WhatsApp.</p>
+      <button class="btn btn-whatsapp" popovertarget="wa-chat"><Icon name="whatsapp" /> Escribir por WhatsApp</button>
+    </header>
+
+    <nav class="topics" aria-label="Temas">
+      <ul class="chips chips-scroll">{temas.map((x) => <li><a class="chip" href={`#${x.id}`}>{x.t}</a></li>)}</ul>
+    </nav>
+
+    <section id="como-comprar" class="block">
+      <h2>Cómo comprar</h2>
+      <ol class="steps" style="--n:4">
+        <li><h3>Elige tu producto</h3><p>Busca por categoría o por plataforma. Ves el precio final en dólares.</p></li>
+        <li><h3>Revisa tu carrito</h3><p>El total incluye todo. El envío a domicilio aparece antes de pagar.</p></li>
+        <li><h3>Paga con Wompi</h3><p>Con tu tarjeta de débito o crédito local. Te lleva a la página segura de Wompi.</p></li>
+        <li><h3>Recibe tu pedido</h3><p>Código por WhatsApp o correo, o entrega a domicilio en el AMSS.</p></li>
+      </ol>
+    </section>
+
+    <section id="entregas" class="block">
+      <h2>Entregas y plazos</h2>
+      <div class="split">
+        <div class="panel">
+          <h3>Códigos y saldo digital</h3>
+          <p>Primero confirmamos tu pago. Después te enviamos el código por WhatsApp o correo en un plazo de <b>hasta 24 horas</b>. Normalmente tarda menos, pero revisamos cada pedido para protegerte de fraudes.</p>
+          <DeliveryBadge tipo="digital" compact />
+        </div>
+        <div class="panel">
+          <h3>Consolas, juegos y accesorios</h3>
+          <p>Entregamos a domicilio en el Área Metropolitana de San Salvador. Envío: <b>{usd(ENVIO_AMSS)}</b>. Coordinamos día y hora por WhatsApp.</p>
+          <p><span class="tbd">Cobertura exacta, tarifa y plazos por confirmar</span></p>
+          <DeliveryBadge tipo="fisico" compact />
+        </div>
+      </div>
+    </section>
+
+    <section id="pagos" class="block">
+      <h2>Métodos de pago</h2>
+      <div class="panel">
+        <p>Pagas a través de <b>Wompi El Salvador</b>, con tarjetas de débito y crédito de bancos salvadoreños. <b>No necesitas tarjeta internacional.</b> Todos los precios están en dólares, sin conversión de moneda.</p>
+        <PaySeal />
+        <div class="faq">
+          <details><summary>¿Puedo pagar con mi débito de Banco Agrícola, Cuscatlán o Davivienda?</summary><div>Wompi acepta tarjetas Visa y Mastercard de bancos salvadoreños. Si tu tarjeta de débito no permite compras en línea, actívalas desde la app de tu banco. <span class="tbd">Métodos habilitados por confirmar con Wompi</span></div></details>
+          <details><summary>¿Aceptan transferencias o efectivo?</summary><div>En la tienda en línea el pago es con tarjeta. Si necesitas pagar por transferencia, escríbenos por WhatsApp y revisamos tu caso. <span class="tbd">Política por confirmar</span></div></details>
+          <details><summary>¿Cobran comisiones extra?</summary><div>No. El precio que ves en el producto es el que pagas. Solo los productos físicos suman el envío, que aparece en el carrito antes de pagar.</div></details>
+          <details><summary>¿Es seguro? ¿Ustedes ven mi tarjeta?</summary><div>Los datos de tu tarjeta se ingresan en la página de Wompi, no en la nuestra. Wompi usa verificación 3-D Secure con tu banco.</div></details>
+        </div>
+      </div>
+    </section>
+
+    <section id="reposicion" class="block">
+      <h2>Si tu código no funciona</h2>
+      <div class="alert alert-info">
+        <Icon name="refresh" />
+        <div>
+          <p><b>Te lo reponemos.</b> Escríbenos por WhatsApp con tu número de pedido (empieza con GC-) y una captura del mensaje de error.</p>
+          <p class="small muted">Antes, revisa que la región de tu cuenta sea Estados Unidos: los códigos son de EE. UU.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contacto" class="block">
+      <h2>Contacto</h2>
+      <div class="panel contact">
+        <p><Icon name="whatsapp" /> <b>WhatsApp {contacto.whatsapp}</b></p>
+        <p><Icon name="clock" /> {contacto.horario}</p>
+        <p><Icon name="mail" /> {contacto.correo}</p>
+        <p><span class="tbd">Número, horario y correo por confirmar</span></p>
+      </div>
+    </section>
+
+    <section id="privacidad" class="block">
+      <h2>Privacidad</h2>
+      <p class="muted">Usamos tu nombre, WhatsApp y correo solo para procesar y entregar tu pedido. No publicamos nombres, fotos ni conversaciones sin tu autorización. <span class="tbd">Texto legal pendiente</span></p>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .help-head { margin: var(--s-2) 0 var(--s-4); }
+  .help-head p { max-width: 60ch; }
+  .topics { position: sticky; top: 100px; z-index: 5; background: var(--c-paper); padding: var(--s-2) 0; }
+  @media (min-width: 900px) { .topics { top: 150px; } }
+  .block { padding-block: var(--s-6) 0; scroll-margin-top: 170px; }
+  .block .panel h3 { font-size: var(--t-md); }
+  .block .panel { display: grid; gap: var(--s-3); align-content: start; }
+  .block .panel p { margin: 0; }
+  .contact p { display: flex; gap: 8px; align-items: center; }
+</style>

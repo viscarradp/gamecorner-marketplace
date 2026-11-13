@@ -1,0 +1,87 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { contacto } from '../../data/catalogo';
+---
+<Base title="Pago confirmado" variant="checkout" back={{ href: '/', label: 'Tienda' }}>
+  <div class="container calm wrap">
+    <ol class="stepper" aria-label="Progreso">
+      <li class="done">Carrito</li><li class="done">Datos y entrega</li><li class="done">Pago en Wompi</li>
+    </ol>
+
+    <section class="alert alert-success hero-ok" aria-live="polite">
+      <Icon name="check" size={32} />
+      <div>
+        <h1>¡Pago confirmado!</h1>
+        <p>Pedido <b>GC-10482</b> · Total pagado <b data-total>$22.00</b></p>
+        <p class="small">Te enviamos el comprobante a tu correo y un mensaje a tu WhatsApp.</p>
+      </div>
+    </section>
+
+    <!-- Variante digital -->
+    <section class="panel" data-v="digital">
+      <h2>¿Cuándo llega tu código?</h2>
+      <p class="big">Lo recibes por <b data-canal>WhatsApp</b> en un plazo de <b>hasta 24 horas</b>.</p>
+      <p class="muted small">Normalmente tarda entre 15 y 30 minutos en horario de atención, pero no lo garantizamos: revisamos cada pedido para protegerte de fraudes.</p>
+      <ol class="timeline">
+        <li class="done"><span class="dot"></span><b>Pago confirmado</b><span>Wompi aprobó tu pago.</span></li>
+        <li class="now"><span class="dot"></span><b>Revisando tu pedido</b><span>Estamos preparando tu código.</span></li>
+        <li><span class="dot"></span><b>Código enviado</b><span>Te llegará con los pasos para canjearlo.</span></li>
+      </ol>
+    </section>
+
+    <!-- Variante física -->
+    <section class="panel" data-v="fisico" hidden>
+      <h2>¿Cuándo llega tu pedido?</h2>
+      <p class="big">Te escribimos por <b>WhatsApp</b> para coordinar día y hora de entrega en tu dirección.</p>
+      <p class="muted small">Entregamos en el Área Metropolitana de San Salvador. <span class="tbd">Plazo por confirmar</span></p>
+      <ol class="timeline">
+        <li class="done"><span class="dot"></span><b>Pago confirmado</b><span>Wompi aprobó tu pago.</span></li>
+        <li class="now"><span class="dot"></span><b>Coordinando la entrega</b><span>Te escribimos por WhatsApp.</span></li>
+        <li><span class="dot"></span><b>En camino</b><span>Te avisamos cuando salga.</span></li>
+        <li><span class="dot"></span><b>Entregado</b><span>Revisa el producto al recibirlo.</span></li>
+      </ol>
+    </section>
+
+    <div class="panel help">
+      <p><b>¿Pasaron 24 horas y no te llegó nada?</b> Escríbenos por WhatsApp con tu número de pedido. Horario de atención: {contacto.horario.toLowerCase()}.</p>
+      <div class="ctas">
+        <button class="btn btn-whatsapp" popovertarget="wa-chat"><Icon name="whatsapp" /> Seguir por WhatsApp</button>
+        <a class="btn btn-secondary" href="/">Volver a la tienda</a>
+      </div>
+    </div>
+
+    <p class="presenter small"><span class="tbd">Prototipo</span> Ver variante: <a href="?tipo=digital">código digital</a> · <a href="?tipo=fisico">producto físico</a></p>
+  </div>
+</Base>
+
+<script>
+  import { getItems, getOrderItems, lines, totals, usd, clear } from '../../scripts/cart';
+  const { demo } = getItems();
+  const items = getOrderItems();
+  const t = totals(lines(items));
+  const forced = new URLSearchParams(location.search).get('tipo');
+  const tipo = forced ?? (t.tieneFisico && !t.tieneDigital ? 'fisico' : 'digital');
+  const showBoth = !forced && t.tieneFisico && t.tieneDigital;
+  document.querySelectorAll<HTMLElement>('[data-v]').forEach((s) => { s.hidden = !showBoth && s.dataset.v !== tipo; });
+  const total = document.querySelector('[data-total]'); if (total) total.textContent = usd(t.total);
+  let canal = 'whatsapp';
+  try { canal = sessionStorage.getItem('gcs-canal') ?? 'whatsapp'; } catch {}
+  const c = document.querySelector('[data-canal]');
+  if (c) c.textContent = canal === 'correo' ? 'correo electrónico' : canal === 'ambos' ? 'WhatsApp y correo' : 'WhatsApp';
+  if (!demo) clear();
+</script>
+
+<style>
+  .wrap { max-width: 720px; display: grid; gap: var(--s-4); padding-bottom: var(--s-8); }
+  .wrap .stepper { margin-bottom: 0; }
+  .hero-ok h1 { font-size: var(--t-xl); margin-bottom: 6px; }
+  .hero-ok p { margin: 0 0 4px; }
+  .hero-ok svg { color: var(--c-success); }
+  .big { font-size: var(--t-lg); line-height: 1.35; }
+  .panel h2 { font-size: var(--t-lg); }
+  .timeline { margin-top: var(--s-5); }
+  .help p { margin-bottom: var(--s-4); }
+  .ctas { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+  .presenter { color: var(--c-muted); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+</style>

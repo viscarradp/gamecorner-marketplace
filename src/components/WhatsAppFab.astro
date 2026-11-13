@@ -1,0 +1,78 @@
+---
+// Botón flotante de WhatsApp en todas las páginas (hallazgo del testeo).
+// En el wireframe abre un chat SIMULADO con respuestas rápidas, que cubre la tarea 3 del testeo
+// (consultar sobre transferencias desde el botón de soporte). No enlaza a un número real.
+import Icon from './Icon.astro';
+import { contacto } from '../data/catalogo';
+const respuestas = [
+  { q: '¿Cuánto tarda mi código?', a: 'Después de confirmar tu pago, te enviamos el código en un plazo de hasta 24 horas por WhatsApp o correo. Normalmente tarda menos.' },
+  { q: '¿Aceptan transferencias?', a: 'En la tienda pagas con tarjeta de débito o crédito a través de Wompi. Si quieres pagar por transferencia, escríbenos y revisamos tu caso.', tbd: true },
+  { q: '¿Puedo pagar con mi débito de Banco Agrícola?', a: 'Sí. Wompi acepta tarjetas de débito y crédito emitidas en El Salvador, sin necesidad de tarjeta internacional.' },
+  { q: '¿Dónde está mi pedido?', a: 'Compártenos tu número de pedido (empieza con GC-) y te decimos en qué paso va.' },
+  { q: 'Mi código no funciona', a: 'Envíanos una captura del error y el número de pedido. Si el código no funciona, te lo reponemos.' },
+];
+---
+<button class="wa-fab" popovertarget="wa-chat" aria-label="Escríbenos por WhatsApp">
+  <Icon name="whatsapp" size={24} />
+  <span class="wa-fab-text">¿Dudas? Escríbenos</span>
+</button>
+
+<div id="wa-chat" popover class="wa-chat" aria-label="Chat de WhatsApp (simulado)">
+  <header class="wa-head">
+    <span class="wa-avatar" aria-hidden="true">GC</span>
+    <div><b>Game Corner Store</b><small>WhatsApp {contacto.whatsapp} · <span class="tbd">número por confirmar</span></small></div>
+    <button class="wa-close" popovertarget="wa-chat" popovertargetaction="hide" aria-label="Cerrar"><Icon name="close" /></button>
+  </header>
+  <div class="wa-body" data-wa-body>
+    <p class="wa-msg">¡Hola! ¿En qué te ayudamos? Respondemos en horario de atención: {contacto.horario}.</p>
+  </div>
+  <div class="wa-quick" role="group" aria-label="Preguntas frecuentes">
+    {respuestas.map((r) => <button type="button" class="chip" data-q={r.q} data-a={r.a} data-tbd={r.tbd ? '1' : ''}>{r.q}</button>)}
+  </div>
+  <p class="wa-foot">Simulación de wireframe. En la tienda real este botón abre WhatsApp.</p>
+</div>
+
+<script>
+  const body = document.querySelector<HTMLElement>('[data-wa-body]');
+  document.querySelectorAll<HTMLButtonElement>('.wa-quick button').forEach((b) => {
+    b.addEventListener('click', () => {
+      if (!body) return;
+      const me = document.createElement('p'); me.className = 'wa-msg me'; me.textContent = b.dataset.q ?? '';
+      const them = document.createElement('p'); them.className = 'wa-msg'; them.textContent = b.dataset.a ?? '';
+      if (b.dataset.tbd) { const t = document.createElement('span'); t.className = 'tbd'; t.textContent = 'Política por confirmar'; them.append(' ', t); }
+      body.append(me, them);
+      body.scrollTop = body.scrollHeight;
+    });
+  });
+</script>
+
+<style>
+  .wa-fab {
+    position: fixed; right: 16px; bottom: 16px; z-index: 40;
+    display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 18px 0 14px;
+    background: var(--c-whatsapp); color: #fff; border: 2px solid var(--c-ink); box-shadow: 4px 4px 0 var(--c-ink);
+    font: 700 var(--t-sm)/1 var(--f-body); cursor: pointer;
+  }
+  .wa-fab:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--c-ink); }
+  @media (max-width: 480px) { .wa-fab-text { display: none; } .wa-fab { width: 56px; padding: 0; justify-content: center; } }
+
+  .wa-chat {
+    position: fixed; inset: auto 16px 84px auto; margin: 0; width: min(360px, calc(100vw - 32px)); max-height: min(560px, calc(100dvh - 120px));
+    padding: 0; border: 2px solid var(--c-ink); box-shadow: 6px 6px 0 var(--c-ink); background: #ECE5DD; color: var(--c-ink);
+    display: none; flex-direction: column;
+  }
+  .wa-chat:popover-open { display: flex; }
+  .wa-head { display: flex; align-items: center; gap: 10px; padding: 12px; background: var(--c-whatsapp); color: #fff; }
+  .wa-head b { display: block; }
+  .wa-head small { font-size: var(--t-xs); opacity: .95; }
+  .wa-head .tbd { background: #fff; }
+  .wa-avatar { display: grid; place-items: center; width: 36px; height: 36px; background: var(--c-signal); color: var(--c-ink); font: 800 var(--t-sm)/1 var(--f-display); border: 2px solid var(--c-ink); }
+  .wa-close { margin-left: auto; background: none; border: 0; color: #fff; cursor: pointer; padding: 4px; }
+  .wa-body { padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 120px; }
+  /* :global porque las burbujas nuevas se crean con JS y no reciben el atributo de alcance de Astro */
+  :global(.wa-msg) { margin: 0; background: #fff; padding: 8px 10px; max-width: 85%; font-size: var(--t-sm); line-height: 1.4; align-self: flex-start; }
+  :global(.wa-msg.me) { align-self: flex-end; background: #D9FDD3; }
+  .wa-quick { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 12px; background: #fff; border-top: 2px solid var(--c-ink); }
+  .wa-quick .chip { min-height: 32px; font-size: var(--t-xs); white-space: normal; text-align: left; }
+  .wa-foot { margin: 0; padding: 6px 12px 10px; background: #fff; font-size: 0.6875rem; color: var(--c-muted); }
+</style>

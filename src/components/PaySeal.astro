@@ -1,0 +1,16 @@
+---
+// Sello de pago. Hallazgo del testeo: mostrar Wompi y Banco Agrícola resolvió la duda sobre tarjetas de débito locales.
+// Los logos son marcadores de posición en el wireframe.
+import Icon from './Icon.astro';
+import { getImagen } from '../data/imagenes';
+const wompi = getImagen('logo-wompi');
+const ba = getImagen('logo-banco-agricola');
+interface Props { label?: string }
+const { label = 'Paga seguro con tarjeta local' } = Astro.props;
+---
+<div class="payseal">
+  <Icon name="lock" size={16} />
+  <span>{label}</span>
+  <span class={`payseal-logo${wompi ? ' has-logo' : ''}`}><span class="logo-text">Wompi <i>logo</i></span>{wompi && <img class="logo-img" src={wompi.file} alt={wompi.alt} />}</span>
+  <span class={`payseal-logo${ba ? ' has-logo' : ''}`}><span class="logo-text">Banco Agrícola <i>logo</i></span>{ba && <img class="logo-img" src={ba.file} alt={ba.alt} />}</span>
+</div>
